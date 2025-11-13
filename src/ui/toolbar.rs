@@ -22,6 +22,7 @@ pub struct BuildButton {
 pub enum ConstructionTab {
     Structure,
     Furniture,
+    Staff,
     Decoration,
     Floors,
 }
@@ -31,6 +32,39 @@ pub enum BuildingType {
     Wall,
     Door,
     Window,
+    Floor(crate::components::FloorType),
+    Furniture(crate::components::FurnitureType),
+}
+
+impl BuildingType {
+    pub fn cost(&self) -> i32 {
+        match self {
+            BuildingType::Wall => 10,
+            BuildingType::Door => 50,
+            BuildingType::Window => 30,
+            BuildingType::Floor(floor_type) => {
+                use crate::components::FloorType;
+                match floor_type {
+                    FloorType::Wood => 5,
+                    FloorType::Stone => 8,
+                    FloorType::Carpet => 12,
+                    FloorType::Tile => 10,
+                }
+            }
+            BuildingType::Furniture(furniture_type) => {
+                use crate::components::{FurnitureType, BedType};
+                match furniture_type {
+                    FurnitureType::Bed(BedType::Single) => 200,
+                    FurnitureType::Bed(BedType::Double) => 350,
+                    FurnitureType::Desk => 100,
+                    FurnitureType::Chair => 50,
+                    FurnitureType::Dresser => 150,
+                    FurnitureType::Nightstand => 75,
+                    FurnitureType::ReceptionConsole => 300,
+                }
+            }
+        }
+    }
 }
 
 #[derive(Resource, Default)]
@@ -75,6 +109,7 @@ fn setup_toolbar(mut commands: Commands) {
             // Tab buttons
             spawn_tab_button(parent, ConstructionTab::Structure, "Structure");
             spawn_tab_button(parent, ConstructionTab::Furniture, "Furniture");
+            spawn_tab_button(parent, ConstructionTab::Staff, "Staff");
             spawn_tab_button(parent, ConstructionTab::Decoration, "Decoration");
             spawn_tab_button(parent, ConstructionTab::Floors, "Floors");
         });
@@ -171,6 +206,26 @@ fn handle_tab_clicks(
                                     spawn_build_button(parent, BuildingType::Wall, "Wall");
                                     spawn_build_button(parent, BuildingType::Door, "Door");
                                     spawn_build_button(parent, BuildingType::Window, "Window");
+                                }
+                                ConstructionTab::Furniture => {
+                                    use crate::components::{FurnitureType, BedType};
+                                    spawn_build_button(parent, BuildingType::Furniture(FurnitureType::Bed(BedType::Single)), "Single Bed");
+                                    spawn_build_button(parent, BuildingType::Furniture(FurnitureType::Bed(BedType::Double)), "Double Bed");
+                                    spawn_build_button(parent, BuildingType::Furniture(FurnitureType::Desk), "Desk");
+                                    spawn_build_button(parent, BuildingType::Furniture(FurnitureType::Chair), "Chair");
+                                    spawn_build_button(parent, BuildingType::Furniture(FurnitureType::Dresser), "Dresser");
+                                    spawn_build_button(parent, BuildingType::Furniture(FurnitureType::Nightstand), "Nightstand");
+                                }
+                                ConstructionTab::Staff => {
+                                    use crate::components::FurnitureType;
+                                    spawn_build_button(parent, BuildingType::Furniture(FurnitureType::ReceptionConsole), "Reception");
+                                }
+                                ConstructionTab::Floors => {
+                                    use crate::components::FloorType;
+                                    spawn_build_button(parent, BuildingType::Floor(FloorType::Wood), "Wood");
+                                    spawn_build_button(parent, BuildingType::Floor(FloorType::Stone), "Stone");
+                                    spawn_build_button(parent, BuildingType::Floor(FloorType::Carpet), "Carpet");
+                                    spawn_build_button(parent, BuildingType::Floor(FloorType::Tile), "Tile");
                                 }
                                 _ => {
                                     // TODO: Add other categories

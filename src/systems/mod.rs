@@ -3,9 +3,17 @@ pub mod building;
 pub mod pawn;
 pub mod work;
 pub mod ascii_renderer;
+pub mod time_control;
+pub mod economy;
+pub mod room_detection;
+pub mod zone;
 
 pub use grid::*;
 pub use building::*;
 pub use pawn::*;
 pub use work::*;
 pub use ascii_renderer::*;
+pub use time_control::*;
+pub use economy::*;
+pub use room_detection::*;
+pub use zone::*;

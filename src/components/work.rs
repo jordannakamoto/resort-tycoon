@@ -11,8 +11,10 @@ impl Blueprint {
     pub fn new(building_type: BlueprintType) -> Self {
         let work_required = match building_type {
             BlueprintType::Wall => 100.0,
-            BlueprintType::Door => 150.0,
+            BlueprintType::Door(_) => 150.0,
             BlueprintType::Window => 120.0,
+            BlueprintType::Floor(_) => 50.0, // Floors are faster to build
+            BlueprintType::Furniture(_) => 80.0, // Furniture takes moderate time
         };
 
         Self {
@@ -34,9 +36,13 @@ impl Blueprint {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BlueprintType {
     Wall,
-    Door,
+    Door(DoorOrientation),
     Window,
+    Floor(FloorType),
+    Furniture(FurnitureType),
 }
+
+use crate::components::{FloorType, DoorOrientation, FurnitureType};
 
 #[derive(Component)]
 pub struct ConstructionJob {

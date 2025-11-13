@@ -4,8 +4,8 @@ mod ui;
 mod systems;
 mod components;
 
-use ui::ToolbarPlugin;
-use systems::{GridPlugin, BuildingPlugin, PawnPlugin, WorkPlugin, AsciiRendererPlugin};
+use ui::{ToolbarPlugin, SpeedControlPlugin, MoneyDisplayPlugin};
+use systems::{GridPlugin, BuildingPlugin, PawnPlugin, WorkPlugin, AsciiRendererPlugin, TimeControlPlugin, EconomyPlugin, RoomDetectionPlugin, ZoneVisualizationPlugin};
 
 // Tile system constants
 // In RimWorld, a pawn occupies 1 tile. In our game, a pawn will occupy 2x2 tiles (4 tiles)
@@ -25,10 +25,16 @@ fn main() {
         .add_plugins((
             GridPlugin,
             ToolbarPlugin,
+            SpeedControlPlugin,
+            MoneyDisplayPlugin,
             BuildingPlugin,
             PawnPlugin,
             WorkPlugin,
             AsciiRendererPlugin,
+            TimeControlPlugin,
+            EconomyPlugin,
+            RoomDetectionPlugin,
+            ZoneVisualizationPlugin,
         ))
         .add_systems(Startup, setup)
         .run();

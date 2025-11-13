@@ -20,13 +20,68 @@ impl GridPosition {
 pub struct Wall;
 
 #[derive(Component)]
-pub struct Door;
+pub struct Door {
+    pub orientation: DoorOrientation,
+    pub state: DoorState,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DoorOrientation {
+    Horizontal, // 2 tiles wide (left-right)
+    Vertical,   // 2 tiles tall (up-down)
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DoorState {
+    Closed,
+    Open,
+}
+
+impl Door {
+    pub fn new(orientation: DoorOrientation) -> Self {
+        Self {
+            orientation,
+            state: DoorState::Closed,
+        }
+    }
+
+    pub fn tiles_occupied(&self, base_pos: IVec2) -> Vec<IVec2> {
+        match self.orientation {
+            DoorOrientation::Horizontal => vec![base_pos, base_pos + IVec2::new(1, 0)],
+            DoorOrientation::Vertical => vec![base_pos, base_pos + IVec2::new(0, 1)],
+        }
+    }
+}
 
 #[derive(Component)]
 pub struct Window;
 
 #[derive(Component)]
 pub struct Building;
+
+#[derive(Component)]
+pub struct Floor {
+    pub floor_type: FloorType,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum FloorType {
+    Wood,
+    Stone,
+    Carpet,
+    Tile,
+}
+
+impl FloorType {
+    pub fn color(&self) -> Color {
+        match self {
+            FloorType::Wood => Color::srgb(0.6, 0.4, 0.2),
+            FloorType::Stone => Color::srgb(0.4, 0.4, 0.4),
+            FloorType::Carpet => Color::srgb(0.7, 0.3, 0.3),
+            FloorType::Tile => Color::srgb(0.9, 0.9, 0.9),
+        }
+    }
+}
 
 #[derive(Component)]
 pub struct PlacementPreview;

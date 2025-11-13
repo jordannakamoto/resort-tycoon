@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy::sprite::*;
 use crate::components::*;
 use crate::systems::grid::*;
+use crate::systems::building::BuildingMap;
 
 pub struct WorkPlugin;
 
@@ -12,6 +13,7 @@ impl Plugin for WorkPlugin {
             work_on_blueprints,
             update_blueprint_visuals,
             complete_blueprints,
+            handle_door_interactions,
         ).chain());
     }
 }
@@ -98,7 +100,7 @@ fn work_on_blueprints(
                         commands.entity(pawn_entity).remove::<MovementTarget>();
 
                         // Do work
-                        let work_speed = 10.0; // work units per second
+                        let work_speed = 50.0; // work units per second (faster building)
                         blueprint.work_done += work_speed * time.delta_secs();
                         blueprint.work_done = blueprint.work_done.min(blueprint.work_required);
                     }
@@ -117,6 +119,7 @@ fn complete_blueprints(
     job_query: Query<(Entity, &ConstructionJob)>,
     mut pawn_query: Query<&mut CurrentJob, With<Pawn>>,
     grid_settings: Res<GridSettings>,
+    mut building_map: ResMut<BuildingMap>,
 ) {
     for (blueprint_entity, blueprint, grid_pos, transform) in &blueprint_query {
         if blueprint.is_complete() {
@@ -138,7 +141,7 @@ fn complete_blueprints(
 
             match blueprint.building_type {
                 BlueprintType::Wall => {
-                    commands.spawn((
+                    let wall_entity = commands.spawn((
                         Mesh2d(meshes.add(Rectangle::new(grid_settings.tile_size, grid_settings.tile_size))),
                         MeshMaterial2d(materials.add(WallMaterial::Stone.color())),
                         Transform::from_xyz(
@@ -149,18 +152,37 @@ fn complete_blueprints(
                         Wall,
                         Building,
                         GridPosition::new(grid_pos.x, grid_pos.y),
-                    ));
+                    )).id();
+
+                    // Update building map to track the completed wall entity
+                    building_map.walls.insert(grid_pos.to_ivec2(), wall_entity);
                 }
-                BlueprintType::Door => {
+                BlueprintType::Door(orientation) => {
+                    let (width, height, offset) = match orientation {
+                        DoorOrientation::Horizontal => {
+                            (grid_settings.tile_size * 2.0, grid_settings.tile_size, Vec2::new(grid_settings.tile_size / 2.0, 0.0))
+                        }
+                        DoorOrientation::Vertical => {
+                            (grid_settings.tile_size, grid_settings.tile_size * 2.0, Vec2::new(0.0, grid_settings.tile_size / 2.0))
+                        }
+                    };
+
+                    let world_pos = grid_to_world(
+                        grid_pos.to_ivec2(),
+                        grid_settings.tile_size,
+                        grid_settings.width,
+                        grid_settings.height,
+                    ) + offset;
+
                     commands.spawn((
-                        Mesh2d(meshes.add(Rectangle::new(grid_settings.tile_size, grid_settings.tile_size))),
+                        Mesh2d(meshes.add(Rectangle::new(width, height))),
                         MeshMaterial2d(materials.add(Color::srgb(0.4, 0.3, 0.2))),
                         Transform::from_xyz(
-                            transform.translation.x,
-                            transform.translation.y,
+                            world_pos.x,
+                            world_pos.y,
                             2.0,
                         ),
-                        Door,
+                        Door::new(orientation),
                         Building,
                         GridPosition::new(grid_pos.x, grid_pos.y),
                     ));
@@ -178,6 +200,24 @@ fn complete_blueprints(
                         Building,
                         GridPosition::new(grid_pos.x, grid_pos.y),
                     ));
+                }
+                BlueprintType::Floor(floor_type) => {
+                    commands.spawn((
+                        Mesh2d(meshes.add(Rectangle::new(grid_settings.tile_size, grid_settings.tile_size))),
+                        MeshMaterial2d(materials.add(floor_type.color())),
+                        Transform::from_xyz(
+                            transform.translation.x,
+                            transform.translation.y,
+                            0.5, // Floors render below everything else
+                        ),
+                        Floor { floor_type },
+                        GridPosition::new(grid_pos.x, grid_pos.y),
+                    ));
+                }
+                BlueprintType::Furniture(_furniture_type) => {
+                    // Furniture is spawned directly without blueprints, so this case shouldn't occur
+                    // But we need it for pattern matching completeness
+                    warn!("Furniture blueprint completed unexpectedly - furniture should spawn directly");
                 }
             }
         }
@@ -197,11 +237,83 @@ fn update_blueprint_visuals(
 
             let base_color = match blueprint.building_type {
                 BlueprintType::Wall => Color::srgb(0.5, 0.5, 0.5),
-                BlueprintType::Door => Color::srgb(0.4, 0.3, 0.2),
+                BlueprintType::Door(_) => Color::srgb(0.4, 0.3, 0.2),
                 BlueprintType::Window => Color::srgb(0.6, 0.8, 1.0),
+                BlueprintType::Floor(floor_type) => floor_type.color(),
+                BlueprintType::Furniture(furniture_type) => furniture_type.color(),
             };
 
             material.color = base_color.with_alpha(alpha);
+        }
+    }
+}
+
+// Handle door opening and closing based on pawn proximity
+fn handle_door_interactions(
+    mut door_query: Query<(&mut Transform, &mut Door, &MeshMaterial2d<ColorMaterial>)>,
+    pawn_query: Query<&Transform, (With<Pawn>, Without<Door>)>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+    time: Res<Time>,
+) {
+    const DOOR_OPEN_DISTANCE: f32 = TILE_SIZE * 4.0; // Doors open when pawns are within 4 tiles
+    const DOOR_ANIMATION_SPEED: f32 = 3.0; // Radians per second
+
+    for (mut door_transform, mut door, material_handle) in &mut door_query {
+        let door_pos = door_transform.translation.truncate();
+
+        // Check if any pawn is near this door
+        let mut should_be_open = false;
+        for pawn_transform in &pawn_query {
+            let pawn_pos = pawn_transform.translation.truncate();
+            let distance = door_pos.distance(pawn_pos);
+
+            if distance < DOOR_OPEN_DISTANCE {
+                should_be_open = true;
+                break;
+            }
+        }
+
+        // Update door state if it changed
+        let previous_state = door.state;
+        door.state = if should_be_open {
+            DoorState::Open
+        } else {
+            DoorState::Closed
+        };
+
+        // Animate door rotation
+        let target_rotation = match door.state {
+            DoorState::Open => std::f32::consts::PI / 4.0,  // 45 degrees open
+            DoorState::Closed => 0.0,
+        };
+
+        let current_rotation = door_transform.rotation.to_euler(EulerRot::XYZ).2;
+        let rotation_diff = target_rotation - current_rotation;
+
+        if rotation_diff.abs() > 0.01 {
+            let rotation_step = rotation_diff.signum() * DOOR_ANIMATION_SPEED * time.delta_secs();
+            let new_rotation = if rotation_diff.abs() < rotation_step.abs() {
+                target_rotation
+            } else {
+                current_rotation + rotation_step
+            };
+            door_transform.rotation = Quat::from_rotation_z(new_rotation);
+        }
+
+        // Update visual appearance when state changes
+        if previous_state != door.state {
+            if let Some(material) = materials.get_mut(&material_handle.0) {
+                match door.state {
+                    DoorState::Open => {
+                        // Make door more transparent when open
+                        material.color = Color::srgb(0.4, 0.3, 0.2).with_alpha(0.3);
+                    }
+                    DoorState::Closed => {
+                        // Solid color when closed
+                        material.color = Color::srgb(0.4, 0.3, 0.2);
+                    }
+                }
+            }
         }
     }
 }
