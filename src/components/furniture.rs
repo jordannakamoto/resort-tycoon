@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use serde::{Deserialize, Serialize};
 
 #[derive(Component)]
 pub struct Furniture;
@@ -8,13 +9,13 @@ pub struct Bed {
     pub bed_type: BedType,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum BedType {
     Single,
     Double,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub enum FurnitureOrientation {
     #[default]
     East,
@@ -47,27 +48,18 @@ impl Bed {
     }
 
     pub fn tiles_occupied(&self, base_pos: IVec2) -> Vec<IVec2> {
-        match self.bed_type {
-            BedType::Single => vec![
-                base_pos,
-                base_pos + IVec2::new(1, 0),
-                base_pos + IVec2::new(0, 1),
-                base_pos + IVec2::new(1, 1),
-                base_pos + IVec2::new(0, 2),
-                base_pos + IVec2::new(1, 2),
-            ], // 2x3 tiles
-            BedType::Double => vec![
-                base_pos,
-                base_pos + IVec2::new(1, 0),
-                base_pos + IVec2::new(2, 0),
-                base_pos + IVec2::new(0, 1),
-                base_pos + IVec2::new(1, 1),
-                base_pos + IVec2::new(2, 1),
-                base_pos + IVec2::new(0, 2),
-                base_pos + IVec2::new(1, 2),
-                base_pos + IVec2::new(2, 2),
-            ], // 3x3 tiles
+        let (width, height) = match self.bed_type {
+            BedType::Single => (2, 3),
+            BedType::Double => (4, 4),
+        };
+
+        let mut tiles = Vec::new();
+        for x in 0..width {
+            for y in 0..height {
+                tiles.push(base_pos + IVec2::new(x, y));
+            }
         }
+        tiles
     }
 }
 
@@ -84,6 +76,15 @@ pub struct Dresser;
 pub struct Nightstand;
 
 #[derive(Component)]
+pub struct Toilet;
+
+#[derive(Component)]
+pub struct Sink;
+
+#[derive(Component)]
+pub struct Tub;
+
+#[derive(Component)]
 pub struct ReceptionConsole {
     pub placed_on_desk: Option<Entity>, // Reference to the desk it's on
 }
@@ -96,13 +97,16 @@ impl ReceptionConsole {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum FurnitureType {
     Bed(BedType),
     Desk,
     Chair,
     Dresser,
     Nightstand,
+    Toilet,
+    Sink,
+    Tub,
     ReceptionConsole,
 }
 
@@ -114,6 +118,9 @@ impl FurnitureType {
             FurnitureType::Chair => Color::srgb(0.6, 0.4, 0.2),  // Medium brown
             FurnitureType::Dresser => Color::srgb(0.5, 0.3, 0.1), // Dark brown
             FurnitureType::Nightstand => Color::srgb(0.6, 0.4, 0.2), // Medium brown
+            FurnitureType::Toilet => Color::srgb(0.9, 0.9, 0.95),
+            FurnitureType::Sink => Color::srgb(0.9, 0.9, 0.95),
+            FurnitureType::Tub => Color::srgb(0.9, 0.9, 0.95),
             FurnitureType::ReceptionConsole => Color::srgb(0.3, 0.5, 0.7), // Blue-gray
         }
     }
@@ -146,11 +153,14 @@ impl FurnitureType {
     pub fn base_dimensions(&self) -> (i32, i32) {
         match self {
             FurnitureType::Bed(BedType::Single) => (2, 3),
-            FurnitureType::Bed(BedType::Double) => (3, 3),
+            FurnitureType::Bed(BedType::Double) => (4, 4),
             FurnitureType::Desk => (2, 2),
             FurnitureType::Chair => (1, 1),
             FurnitureType::Dresser => (2, 2),
             FurnitureType::Nightstand => (1, 1),
+            FurnitureType::Toilet => (2, 2),
+            FurnitureType::Sink => (1, 1),
+            FurnitureType::Tub => (2, 4),
             FurnitureType::ReceptionConsole => (1, 1),
         }
     }
@@ -163,6 +173,9 @@ impl FurnitureType {
             FurnitureType::Chair => "Chair",
             FurnitureType::Dresser => "Dresser",
             FurnitureType::Nightstand => "Nightstand",
+            FurnitureType::Toilet => "Toilet",
+            FurnitureType::Sink => "Sink",
+            FurnitureType::Tub => "Tub",
             FurnitureType::ReceptionConsole => "Reception Console",
         }
     }
@@ -174,6 +187,9 @@ impl FurnitureType {
             FurnitureType::Chair => 'π',
             FurnitureType::Dresser => '▓',
             FurnitureType::Nightstand => '□',
+            FurnitureType::Toilet => '╥',
+            FurnitureType::Sink => '○',
+            FurnitureType::Tub => '≋',
             FurnitureType::ReceptionConsole => '▣',
         }
     }

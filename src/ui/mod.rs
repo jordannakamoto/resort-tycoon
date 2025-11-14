@@ -1,11 +1,13 @@
 use bevy::prelude::Resource;
 
 pub mod money_display;
+pub mod save_load_panel;
 pub mod speed_control;
 pub mod toolbar;
 pub mod work_assignments;
 
 pub use money_display::*;
+pub use save_load_panel::*;
 pub use speed_control::*;
 pub use toolbar::*;
 pub use work_assignments::*;

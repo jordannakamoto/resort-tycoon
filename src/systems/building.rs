@@ -10,6 +10,13 @@ use std::f32::consts::{FRAC_PI_2, PI};
 
 const SINGLE_BED_SPRITE_PATH: &str = "generated/furniture/bed.png";
 const DOUBLE_BED_SPRITE_PATH: &str = "generated/furniture/double_bed.png";
+const DRESSER_FRONT_SPRITE_PATH: &str = "generated/furniture/dresser_front.png";
+const DRESSER_BACK_SPRITE_PATH: &str = "generated/furniture/dresser_back.png";
+const DRESSER_SIDE_SPRITE_PATH: &str = "generated/furniture/dresser_side.png";
+const END_TABLE_SPRITE_PATH: &str = "generated/furniture/endtable.png";
+const TUB_SPRITE_PATH: &str = "generated/bath/tub.png";
+const SINK_SPRITE_PATH: &str = "generated/bath/sink.png";
+const TOILET_SPRITE_PATH: &str = "generated/bath/toilet.png";
 const COMPUTER_FRONT_SPRITE_PATH: &str = "generated/staff/computer.png";
 const COMPUTER_BACK_SPRITE_PATH: &str = "generated/staff/computer_back.png";
 const COMPUTER_SIDE_SPRITE_PATH: &str = "generated/staff/computer_side.png";
@@ -253,6 +260,7 @@ fn update_placement_preview(
     building_map: Res<BuildingMap>,
     desk_query: Query<&GridPosition, With<Desk>>,
     ui_blocker: Res<UiInputBlocker>,
+    asset_server: Res<AssetServer>,
 ) {
     let window = window_query.single();
     let (camera, camera_transform) = camera_query.single();
@@ -290,9 +298,9 @@ fn update_placement_preview(
                 };
 
                 let color = if is_blocked {
-                    Color::srgba(1.0, 0.3, 0.3, 0.5)
+                    Color::srgba(1.0, 0.3, 0.3, 0.5)  // Red for blocked
                 } else {
-                    Color::srgba(0.3, 1.0, 0.3, 0.5)
+                    Color::srgba(1.0, 1.0, 1.0, 0.5)  // White for valid
                 };
 
                 commands.spawn((
@@ -350,9 +358,9 @@ fn update_placement_preview(
                             let is_blocked = building_map.occupied.contains(&tile_pos)
                                 || building_map.doors.contains_key(&tile_pos);
                             let color = if is_blocked {
-                                Color::srgba(1.0, 0.3, 0.3, 0.5)
+                                Color::srgba(1.0, 0.3, 0.3, 0.5)  // Red for blocked
                             } else {
-                                Color::srgba(0.3, 1.0, 0.3, 0.5)
+                                Color::srgba(1.0, 1.0, 1.0, 0.5)  // White for valid
                             };
 
                             commands.spawn((
@@ -379,64 +387,221 @@ fn update_placement_preview(
                                 desk_tiles.contains(&grid_pos)
                             });
 
-                            let color = if !has_desk {
-                                Color::srgba(1.0, 0.3, 0.3, 0.5) // Red if no desk
-                            } else {
-                                Color::srgba(0.3, 1.0, 0.3, 0.5) // Green if desk present
+                            // Select sprite based on orientation
+                            let orientation = furniture_state.orientation;
+                            let (sprite_path, flip_x) = match orientation {
+                                FurnitureOrientation::East => {
+                                    (COMPUTER_SIDE_SPRITE_PATH, false)
+                                }
+                                FurnitureOrientation::West => (COMPUTER_SIDE_SPRITE_PATH, true),
+                                FurnitureOrientation::South => {
+                                    (COMPUTER_FRONT_SPRITE_PATH, false)
+                                }
+                                FurnitureOrientation::North => {
+                                    (COMPUTER_BACK_SPRITE_PATH, false)
+                                }
                             };
 
+                            let preview_color = if !has_desk {
+                                Color::srgba(1.0, 0.3, 0.3, 1.0)  // Red if no desk
+                            } else {
+                                Color::srgba(1.0, 1.0, 1.0, 0.7)  // White if desk present, preserves sprite alpha
+                            };
+
+                            let mut sprite = Sprite {
+                                image: asset_server.load(sprite_path),
+                                color: preview_color,
+                                custom_size: Some(Vec2::new(
+                                    grid_settings.tile_size,
+                                    grid_settings.tile_size,
+                                )),
+                                ..default()
+                            };
+                            sprite.flip_x = flip_x;
+
+                            // Use higher z-level so it appears above desk
                             commands.spawn((
-                                Mesh2d(meshes.add(Rectangle::new(
-                                    grid_settings.tile_size,
-                                    grid_settings.tile_size,
-                                ))),
-                                MeshMaterial2d(materials.add(color)),
-                                Transform::from_xyz(world_pos.x, world_pos.y, 1.0),
+                                sprite,
+                                Transform::from_xyz(world_pos.x, world_pos.y, 4.0),
                                 PlacementPreview,
                             ));
                         } else {
-                            // Multi-tile furniture preview
+                            // Show actual furniture shape as preview
+                            let orientation = furniture_state.orientation;
                             let furniture_tiles = furniture_type
-                                .tiles_occupied(grid_pos, furniture_state.orientation);
+                                .tiles_occupied(grid_pos, orientation);
+                            let (width_tiles, height_tiles) =
+                                furniture_type.oriented_dimensions(orientation);
+                            let rotation_radians = furniture_rotation_radians(orientation);
 
-                            for tile_pos in furniture_tiles {
-                                let tile_world_pos = grid_to_world(
-                                    tile_pos,
-                                    grid_settings.tile_size,
-                                    grid_settings.width,
-                                    grid_settings.height,
-                                );
+                            // Check if furniture can be placed
+                            let is_blocked = furniture_tiles.iter().any(|tile_pos| {
+                                !building_map.floors.contains(tile_pos)
+                                    || building_map.occupied.contains(tile_pos)
+                                    || building_map.doors.contains_key(tile_pos)
+                            });
 
-                                // Furniture needs floor and available space
-                                let has_floor = building_map.floors.contains(&tile_pos);
-                                let is_occupied = building_map.occupied.contains(&tile_pos)
-                                    || building_map.doors.contains_key(&tile_pos);
-                                let is_blocked = !has_floor || is_occupied;
+                            // Calculate center position for preview
+                            let offset = Vec2::new(
+                                (width_tiles as f32 - 1.0) * grid_settings.tile_size / 2.0,
+                                (height_tiles as f32 - 1.0) * grid_settings.tile_size / 2.0,
+                            );
 
-                                let color = if is_blocked {
-                                    Color::srgba(1.0, 0.3, 0.3, 0.5)
-                                } else {
-                                    Color::srgba(0.3, 1.0, 0.3, 0.5)
-                                };
+                            let base_world_pos = grid_to_world(
+                                grid_pos,
+                                grid_settings.tile_size,
+                                grid_settings.width,
+                                grid_settings.height,
+                            );
+                            let preview_pos = base_world_pos + offset;
 
-                                commands.spawn((
-                                    Mesh2d(meshes.add(Rectangle::new(
-                                        grid_settings.tile_size,
-                                        grid_settings.tile_size,
-                                    ))),
-                                    MeshMaterial2d(materials.add(color)),
-                                    Transform::from_xyz(tile_world_pos.x, tile_world_pos.y, 1.0),
-                                    PlacementPreview,
-                                ));
+                            // Create preview based on furniture type
+                            match furniture_type {
+                                FurnitureType::Bed(bed_type) => {
+                                    let (base_width_tiles, base_height_tiles) =
+                                        furniture_type.base_dimensions();
+                                    let sprite_size = Vec2::new(
+                                        base_width_tiles as f32 * grid_settings.tile_size,
+                                        base_height_tiles as f32 * grid_settings.tile_size,
+                                    );
+
+                                    let sprite_path = match bed_type {
+                                        BedType::Single => SINGLE_BED_SPRITE_PATH,
+                                        BedType::Double => DOUBLE_BED_SPRITE_PATH,
+                                    };
+
+                                    let mut transform =
+                                        Transform::from_xyz(preview_pos.x, preview_pos.y, 4.0);
+                                    transform.rotate_z(rotation_radians);
+
+                                    // Use white tint with full alpha - sprite's own alpha channel will define the shape
+                                    let preview_color = if is_blocked {
+                                        Color::srgba(1.0, 0.3, 0.3, 1.0)  // Red for blocked
+                                    } else {
+                                        Color::srgba(1.0, 1.0, 1.0, 0.7)  // White for valid, preserves sprite alpha
+                                    };
+
+                                    commands.spawn((
+                                        Sprite {
+                                            image: asset_server.load(sprite_path),
+                                            color: preview_color,
+                                            custom_size: Some(sprite_size),
+                                            ..default()
+                                        },
+                                        transform,
+                                        PlacementPreview,
+                                    ));
+                                }
+                                FurnitureType::Nightstand => {
+                                    let (base_width_tiles, base_height_tiles) =
+                                        furniture_type.base_dimensions();
+                                    let sprite_size = Vec2::new(
+                                        base_width_tiles as f32 * grid_settings.tile_size,
+                                        base_height_tiles as f32 * grid_settings.tile_size,
+                                    );
+
+                                    let mut transform =
+                                        Transform::from_xyz(preview_pos.x, preview_pos.y, 4.0);
+                                    transform.rotate_z(rotation_radians);
+
+                                    // Use white tint with full alpha - sprite's own alpha channel will define the shape
+                                    let preview_color = if is_blocked {
+                                        Color::srgba(1.0, 0.3, 0.3, 1.0)  // Red for blocked
+                                    } else {
+                                        Color::srgba(1.0, 1.0, 1.0, 0.7)  // White for valid, preserves sprite alpha
+                                    };
+
+                                    commands.spawn((
+                                        Sprite {
+                                            image: asset_server.load(END_TABLE_SPRITE_PATH),
+                                            color: preview_color,
+                                            custom_size: Some(sprite_size),
+                                            ..default()
+                                        },
+                                        transform,
+                                        PlacementPreview,
+                                    ));
+                                }
+                                FurnitureType::Dresser => {
+                                    let (base_width_tiles, base_height_tiles) =
+                                        furniture_type.base_dimensions();
+                                    let sprite_size = Vec2::new(
+                                        base_width_tiles as f32 * grid_settings.tile_size,
+                                        base_height_tiles as f32 * grid_settings.tile_size,
+                                    );
+                                    let transform =
+                                        Transform::from_xyz(preview_pos.x, preview_pos.y, 4.0);
+
+                                    // Keep dresser preview upright; swap textures based on facing.
+                                    let (sprite_path, flip_x) = match orientation {
+                                        FurnitureOrientation::South => {
+                                            (DRESSER_FRONT_SPRITE_PATH, false)
+                                        }
+                                        FurnitureOrientation::North => {
+                                            (DRESSER_BACK_SPRITE_PATH, false)
+                                        }
+                                        FurnitureOrientation::East => {
+                                            (DRESSER_SIDE_SPRITE_PATH, false)
+                                        }
+                                        FurnitureOrientation::West => {
+                                            (DRESSER_SIDE_SPRITE_PATH, true)
+                                        }
+                                    };
+
+                                    // Use white tint with full alpha - sprite's own alpha channel will define the shape
+                                    let preview_color = if is_blocked {
+                                        Color::srgba(1.0, 0.3, 0.3, 1.0)  // Red for blocked
+                                    } else {
+                                        Color::srgba(1.0, 1.0, 1.0, 0.7)  // White for valid, preserves sprite alpha
+                                    };
+
+                                    let mut sprite = Sprite {
+                                        image: asset_server.load(sprite_path),
+                                        color: preview_color,
+                                        custom_size: Some(sprite_size),
+                                        ..default()
+                                    };
+                                    sprite.flip_x = flip_x;
+
+                                    commands.spawn((
+                                        sprite,
+                                        transform,
+                                        PlacementPreview,
+                                    ));
+                                }
+                                _ => {
+                                    // Other furniture: show as colored rectangle
+                                    let (base_width_tiles, base_height_tiles) =
+                                        furniture_type.base_dimensions();
+                                    let mut transform =
+                                        Transform::from_xyz(preview_pos.x, preview_pos.y, 4.0);
+                                    transform.rotate_z(rotation_radians);
+
+                                    let preview_color = if is_blocked {
+                                        Color::srgba(1.0, 0.3, 0.3, 0.5)  // Red for blocked
+                                    } else {
+                                        Color::srgba(1.0, 1.0, 1.0, 0.5)  // White for valid
+                                    };
+
+                                    commands.spawn((
+                                        Mesh2d(meshes.add(Rectangle::new(
+                                            base_width_tiles as f32 * grid_settings.tile_size,
+                                            base_height_tiles as f32 * grid_settings.tile_size,
+                                        ))),
+                                        MeshMaterial2d(materials.add(preview_color)),
+                                        transform,
+                                        PlacementPreview,
+                                    ));
+                                }
                             }
                         }
                     } else {
                         // Single tile preview for other buildings
                         let is_occupied = building_map.occupied.contains(&grid_pos);
                         let color = if is_occupied {
-                            Color::srgba(1.0, 0.3, 0.3, 0.5)
+                            Color::srgba(1.0, 0.3, 0.3, 0.5)  // Red for blocked
                         } else {
-                            Color::srgba(0.3, 1.0, 0.3, 0.5)
+                            Color::srgba(1.0, 1.0, 1.0, 0.5)  // White for valid
                         };
 
                         commands.spawn((
@@ -726,6 +891,8 @@ fn handle_building_placement(
                                     Transform::from_xyz(base_world_pos.x, base_world_pos.y, 3.5),
                                     GridPosition::new(grid_pos.x, grid_pos.y),
                                     Furniture,
+                                    furniture_type,
+                                    orientation,
                                     ReceptionConsole::new(),
                                 ));
 
@@ -806,6 +973,156 @@ fn handle_building_placement(
                                             transform,
                                             GridPosition::new(grid_pos.x, grid_pos.y),
                                             Furniture,
+                                            furniture_type,
+                                            orientation,
+                                        ))
+                                        .id()
+                                }
+                                FurnitureType::Dresser => {
+                                    let (base_width_tiles, base_height_tiles) =
+                                        furniture_type.base_dimensions();
+                                    let sprite_size = Vec2::new(
+                                        base_width_tiles as f32 * grid_settings.tile_size,
+                                        base_height_tiles as f32 * grid_settings.tile_size,
+                                    );
+                                    let mut transform =
+                                        Transform::from_xyz(furniture_pos.x, furniture_pos.y, 3.0);
+
+                                    // Keep dresser sprite upright; swap textures based on facing.
+                                    let (sprite_path, flip_x) = match orientation {
+                                        FurnitureOrientation::South => {
+                                            (DRESSER_FRONT_SPRITE_PATH, false)
+                                        }
+                                        FurnitureOrientation::North => {
+                                            (DRESSER_BACK_SPRITE_PATH, false)
+                                        }
+                                        FurnitureOrientation::East => {
+                                            (DRESSER_SIDE_SPRITE_PATH, false)
+                                        }
+                                        FurnitureOrientation::West => {
+                                            (DRESSER_SIDE_SPRITE_PATH, true)
+                                        }
+                                    };
+
+                                    let mut sprite = Sprite {
+                                        image: asset_server.load(sprite_path),
+                                        custom_size: Some(sprite_size),
+                                        ..default()
+                                    };
+                                    sprite.flip_x = flip_x;
+
+                                    commands
+                                        .spawn((
+                                            sprite,
+                                            transform,
+                                            GridPosition::new(grid_pos.x, grid_pos.y),
+                                            Furniture,
+                                            furniture_type,
+                                            orientation,
+                                        ))
+                                        .id()
+                                }
+                                FurnitureType::Tub => {
+                                    let (base_width_tiles, base_height_tiles) =
+                                        furniture_type.base_dimensions();
+                                    let sprite_size = Vec2::new(
+                                        base_width_tiles as f32 * grid_settings.tile_size,
+                                        base_height_tiles as f32 * grid_settings.tile_size,
+                                    );
+                                    let mut transform =
+                                        Transform::from_xyz(furniture_pos.x, furniture_pos.y, 3.0);
+                                    transform.rotate_z(rotation_radians);
+
+                                    commands
+                                        .spawn((
+                                            Sprite {
+                                                image: asset_server.load(TUB_SPRITE_PATH),
+                                                custom_size: Some(sprite_size),
+                                                ..default()
+                                            },
+                                            transform,
+                                            GridPosition::new(grid_pos.x, grid_pos.y),
+                                            Furniture,
+                                            furniture_type,
+                                            orientation,
+                                        ))
+                                        .id()
+                                }
+                                FurnitureType::Toilet => {
+                                    let (base_width_tiles, base_height_tiles) =
+                                        furniture_type.base_dimensions();
+                                    let sprite_size = Vec2::new(
+                                        base_width_tiles as f32 * grid_settings.tile_size,
+                                        base_height_tiles as f32 * grid_settings.tile_size,
+                                    );
+                                    let mut transform =
+                                        Transform::from_xyz(furniture_pos.x, furniture_pos.y, 3.0);
+                                    transform.rotate_z(rotation_radians);
+
+                                    commands
+                                        .spawn((
+                                            Sprite {
+                                                image: asset_server.load(TOILET_SPRITE_PATH),
+                                                custom_size: Some(sprite_size),
+                                                ..default()
+                                            },
+                                            transform,
+                                            GridPosition::new(grid_pos.x, grid_pos.y),
+                                            Furniture,
+                                            furniture_type,
+                                            orientation,
+                                        ))
+                                        .id()
+                                }
+                                FurnitureType::Sink => {
+                                    let (base_width_tiles, base_height_tiles) =
+                                        furniture_type.base_dimensions();
+                                    let sprite_size = Vec2::new(
+                                        base_width_tiles as f32 * grid_settings.tile_size,
+                                        base_height_tiles as f32 * grid_settings.tile_size,
+                                    );
+                                    let mut transform =
+                                        Transform::from_xyz(furniture_pos.x, furniture_pos.y, 3.0);
+                                    transform.rotate_z(rotation_radians);
+
+                                    commands
+                                        .spawn((
+                                            Sprite {
+                                                image: asset_server.load(SINK_SPRITE_PATH),
+                                                custom_size: Some(sprite_size),
+                                                ..default()
+                                            },
+                                            transform,
+                                            GridPosition::new(grid_pos.x, grid_pos.y),
+                                            Furniture,
+                                            furniture_type,
+                                            orientation,
+                                        ))
+                                        .id()
+                                }
+                                FurnitureType::Nightstand => {
+                                    let (base_width_tiles, base_height_tiles) =
+                                        furniture_type.base_dimensions();
+                                    let sprite_size = Vec2::new(
+                                        base_width_tiles as f32 * grid_settings.tile_size,
+                                        base_height_tiles as f32 * grid_settings.tile_size,
+                                    );
+                                    let mut transform =
+                                        Transform::from_xyz(furniture_pos.x, furniture_pos.y, 3.0);
+                                    transform.rotate_z(rotation_radians);
+
+                                    commands
+                                        .spawn((
+                                            Sprite {
+                                                image: asset_server.load(END_TABLE_SPRITE_PATH),
+                                                custom_size: Some(sprite_size),
+                                                ..default()
+                                            },
+                                            transform,
+                                            GridPosition::new(grid_pos.x, grid_pos.y),
+                                            Furniture,
+                                            furniture_type,
+                                            orientation,
                                         ))
                                         .id()
                                 }
@@ -826,6 +1143,8 @@ fn handle_building_placement(
                                             transform,
                                             GridPosition::new(grid_pos.x, grid_pos.y),
                                             Furniture,
+                                            furniture_type,
+                                            orientation,
                                         ))
                                         .id()
                                 }
@@ -847,6 +1166,15 @@ fn handle_building_placement(
                                 }
                                 FurnitureType::Nightstand => {
                                     commands.entity(furniture_entity).insert(Nightstand);
+                                }
+                                FurnitureType::Toilet => {
+                                    commands.entity(furniture_entity).insert(Toilet);
+                                }
+                                FurnitureType::Sink => {
+                                    commands.entity(furniture_entity).insert(Sink);
+                                }
+                                FurnitureType::Tub => {
+                                    commands.entity(furniture_entity).insert(Tub);
                                 }
                                 FurnitureType::ReceptionConsole => {
                                     commands
@@ -950,24 +1278,38 @@ fn spawn_blueprint(
     world_pos: Vec2,
     tile_size: f32,
 ) -> Entity {
-    // Blueprints are semi-transparent versions of the final building
-    let (color, z_level) = match blueprint_type {
-        BlueprintType::Wall => (Color::srgba(0.5, 0.5, 0.5, 0.5), 1.5),
-        BlueprintType::Door(_) => (Color::srgba(0.4, 0.3, 0.2, 0.5), 1.5),
-        BlueprintType::Window => (Color::srgba(0.6, 0.8, 1.0, 0.5), 1.5),
-        BlueprintType::Floor(floor_type) => {
-            let base_color = floor_type.color();
-            (base_color.with_alpha(0.5), 0.5) // Floors at lower z-level
-        }
-        BlueprintType::Furniture(furniture_type) => {
-            let base_color = furniture_type.color();
-            (base_color.with_alpha(0.5), 2.5) // Furniture at higher z-level
-        }
+    // Blueprints are translucent white (floors lighter, structures more visible)
+    let (color, z_level, mesh_size) = match blueprint_type {
+        BlueprintType::Wall => (
+            Color::srgba(1.0, 1.0, 1.0, 0.6),  // More opaque for walls
+            1.5,
+            (tile_size, tile_size)  // Full square
+        ),
+        BlueprintType::Door(_) => (
+            Color::srgba(1.0, 1.0, 1.0, 0.6),
+            1.5,
+            (tile_size, tile_size)  // Full square
+        ),
+        BlueprintType::Window => (
+            Color::srgba(1.0, 1.0, 1.0, 0.6),
+            1.5,
+            (tile_size, tile_size * WINDOW_THICKNESS)  // Thin for windows
+        ),
+        BlueprintType::Floor(_) => (
+            Color::srgba(1.0, 1.0, 1.0, 0.3),  // More translucent for floors
+            0.5,
+            (tile_size, tile_size)  // Full square
+        ),
+        BlueprintType::Furniture(_) => (
+            Color::srgba(1.0, 1.0, 1.0, 0.6),
+            2.5,
+            (tile_size, tile_size)  // Full square
+        ),
     };
 
     commands
         .spawn((
-        Mesh2d(meshes.add(Rectangle::new(tile_size, tile_size * WINDOW_THICKNESS))),
+            Mesh2d(meshes.add(Rectangle::new(mesh_size.0, mesh_size.1))),
             MeshMaterial2d(materials.add(color)),
             Transform::from_xyz(world_pos.x, world_pos.y, z_level),
             Blueprint::new(blueprint_type),
@@ -1338,18 +1680,25 @@ fn update_wall_projections(
     for (entity, pos, existing_projection) in &structure_query {
         let current_pos = pos.to_ivec2();
 
-        let has_north_structure = occupied_positions.contains(&(current_pos + IVec2::new(0, 1)));
-        let has_east_structure = occupied_positions.contains(&(current_pos + IVec2::new(1, 0)));
-        let has_west_structure = occupied_positions.contains(&(current_pos + IVec2::new(-1, 0)));
+        // Check adjacent positions
+        let has_north = occupied_positions.contains(&(current_pos + IVec2::new(0, 1)));
+        let has_east = occupied_positions.contains(&(current_pos + IVec2::new(1, 0)));
+        let has_west = occupied_positions.contains(&(current_pos + IVec2::new(-1, 0)));
 
         let mut projection = WallProjection::new();
-        if !has_north_structure {
+
+        // Show top shadow if no wall above - this creates the main depth effect
+        if !has_north {
             projection = projection.with_north();
         }
-        if !has_east_structure {
+
+        // Show east shadow if no wall to the east - creates right edge depth
+        if !has_east {
             projection = projection.with_east();
         }
-        if !has_west_structure {
+
+        // Show west shadow if no wall to the west - creates left edge depth
+        if !has_west {
             projection = projection.with_west();
         }
 

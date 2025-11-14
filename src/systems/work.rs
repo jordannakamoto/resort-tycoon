@@ -313,18 +313,14 @@ fn update_blueprint_visuals(
     for (blueprint, material_handle) in &query {
         if let Some(material) = materials.get_mut(&material_handle.0) {
             let progress = blueprint.progress();
-            // Increase opacity as construction progresses
-            let alpha = 0.3 + (progress * 0.5);
 
-            let base_color = match blueprint.building_type {
-                BlueprintType::Wall => Color::srgb(0.5, 0.5, 0.5),
-                BlueprintType::Door(_) => Color::srgb(0.4, 0.3, 0.2),
-                BlueprintType::Window => Color::srgb(0.6, 0.8, 1.0),
-                BlueprintType::Floor(floor_type) => floor_type.color(),
-                BlueprintType::Furniture(furniture_type) => furniture_type.color(),
+            // All blueprints are white, but floors are more translucent
+            let alpha = match blueprint.building_type {
+                BlueprintType::Floor(_) => 0.2 + (progress * 0.3),  // Lighter for floors
+                _ => 0.4 + (progress * 0.4),  // More visible for structures
             };
 
-            material.color = base_color.with_alpha(alpha);
+            material.color = Color::srgba(1.0, 1.0, 1.0, alpha);
         }
     }
 }
@@ -518,31 +514,42 @@ fn handle_door_interactions(
     mut materials: ResMut<Assets<ColorMaterial>>,
     time: Res<Time>,
 ) {
-    const DOOR_OPEN_DISTANCE: f32 = TILE_SIZE * 4.0; // Doors open when pawns are within 4 tiles
-    const DOOR_ANIMATION_SPEED: f32 = 3.0; // Radians per second
+    const DOOR_OPEN_DISTANCE: f32 = TILE_SIZE * 3.0; // Doors open when pawns are within 3 tiles
+    const DOOR_CLOSE_DELAY: f32 = 2.0; // Seconds before door closes after pawn leaves
+    const DOOR_ANIMATION_SPEED: f32 = 4.0; // Radians per second
 
     for (mut door_transform, mut door, material_handle) in &mut door_query {
         let door_pos = door_transform.translation.truncate();
 
         // Check if any pawn is near this door
-        let mut should_be_open = false;
+        let mut pawn_nearby = false;
         for pawn_transform in &pawn_query {
             let pawn_pos = pawn_transform.translation.truncate();
             let distance = door_pos.distance(pawn_pos);
 
             if distance < DOOR_OPEN_DISTANCE {
-                should_be_open = true;
+                pawn_nearby = true;
                 break;
             }
         }
 
-        // Update door state if it changed
+        // Store previous state before updating
         let previous_state = door.state;
-        door.state = if should_be_open {
-            DoorState::Open
+
+        // Update timer and state
+        if pawn_nearby {
+            // Pawn is nearby - open door and reset timer
+            door.state = DoorState::Open;
+            door.close_timer = DOOR_CLOSE_DELAY;
         } else {
-            DoorState::Closed
-        };
+            // No pawn nearby - count down timer
+            if door.close_timer > 0.0 {
+                door.close_timer -= time.delta_secs();
+                door.state = DoorState::Open; // Keep open while timer is active
+            } else {
+                door.state = DoorState::Closed; // Timer expired, close door
+            }
+        }
 
         // Animate door rotation
         let target_rotation = match door.state {

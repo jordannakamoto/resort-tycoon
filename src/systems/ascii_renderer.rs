@@ -16,7 +16,7 @@ impl Plugin for AsciiRendererPlugin {
         app.add_systems(
             Update,
             (
-                add_ascii_to_blueprints,
+                // Blueprints are now rendered as translucent white meshes, no ASCII needed
                 render_ascii_sprites,
                 render_wall_projections,
             ),
@@ -97,13 +97,13 @@ fn render_wall_projections(
     use bevy::sprite::*;
 
     const TILE_SIZE: f32 = 16.0;
-    const SHADE_THICKNESS: f32 = TILE_SIZE * 0.5;
-    const SIDE_SHADE_WIDTH: f32 = TILE_SIZE * 0.4;
+    const SHADE_THICKNESS: f32 = TILE_SIZE * 0.25; // Top shadow thickness
+    const SIDE_SHADE_WIDTH: f32 = TILE_SIZE * 0.25; // Side shadow width
     const SIDE_SHADE_HEIGHT: f32 = TILE_SIZE;
     const HALF_TILE: f32 = TILE_SIZE / 2.0;
-    const NORTH_SHADE_COLOR: Color = Color::srgba(0.12, 0.12, 0.12, 0.9);
-    const EAST_SHADE_COLOR: Color = Color::srgba(0.3, 0.3, 0.3, 0.9);
-    const WEST_SHADE_COLOR: Color = Color::srgba(0.08, 0.08, 0.08, 0.9);
+    // RimWorld-style consistent shadow colors - fully opaque to prevent stacking/blending
+    const NORTH_SHADE_COLOR: Color = Color::srgb(0.1, 0.08, 0.06);  // Top shadow
+    const SIDE_SHADE_COLOR: Color = Color::srgb(0.12, 0.10, 0.08);  // Consistent side shadows
     const FORCE_ALL_PROJECTIONS: bool = false;
 
     let mut rebuild = |entity: Entity,
@@ -135,24 +135,19 @@ fn render_wall_projections(
                 parent.spawn((
                     Mesh2d(meshes.add(Rectangle::new(TILE_SIZE, SHADE_THICKNESS))),
                     MeshMaterial2d(materials.add(NORTH_SHADE_COLOR)),
-                    Transform::from_xyz(0.0, HALF_TILE - SHADE_THICKNESS / 2.0, 0.1),
+                    Transform::from_xyz(0.0, HALF_TILE - SHADE_THICKNESS / 2.0, 0.15),
                     WallProjectionVisual,
                 ));
             }
 
+            // Side shadows are always full height and centered for consistency
             if active_projection.east {
-                let (height, y_offset) = if active_projection.north {
-                    (SIDE_SHADE_HEIGHT - SHADE_THICKNESS, -SHADE_THICKNESS / 2.0)
-                } else {
-                    (SIDE_SHADE_HEIGHT, 0.0)
-                };
-
                 parent.spawn((
-                    Mesh2d(meshes.add(Rectangle::new(SIDE_SHADE_WIDTH, height.max(0.0)))),
-                    MeshMaterial2d(materials.add(EAST_SHADE_COLOR)),
+                    Mesh2d(meshes.add(Rectangle::new(SIDE_SHADE_WIDTH, SIDE_SHADE_HEIGHT))),
+                    MeshMaterial2d(materials.add(SIDE_SHADE_COLOR)),
                     Transform::from_xyz(
                         HALF_TILE - SIDE_SHADE_WIDTH / 2.0,
-                        y_offset,
+                        0.0,
                         0.1,
                     ),
                     WallProjectionVisual,
@@ -160,18 +155,12 @@ fn render_wall_projections(
             }
 
             if active_projection.west {
-                let (height, y_offset) = if active_projection.north {
-                    (SIDE_SHADE_HEIGHT - SHADE_THICKNESS, -SHADE_THICKNESS / 2.0)
-                } else {
-                    (SIDE_SHADE_HEIGHT, 0.0)
-                };
-
                 parent.spawn((
-                    Mesh2d(meshes.add(Rectangle::new(SIDE_SHADE_WIDTH, height.max(0.0)))),
-                    MeshMaterial2d(materials.add(WEST_SHADE_COLOR)),
+                    Mesh2d(meshes.add(Rectangle::new(SIDE_SHADE_WIDTH, SIDE_SHADE_HEIGHT))),
+                    MeshMaterial2d(materials.add(SIDE_SHADE_COLOR)),
                     Transform::from_xyz(
                         -HALF_TILE + SIDE_SHADE_WIDTH / 2.0,
-                        y_offset,
+                        0.0,
                         0.1,
                     ),
                     WallProjectionVisual,

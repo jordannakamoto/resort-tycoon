@@ -59,6 +59,7 @@ impl WallProjection {
 pub struct Door {
     pub orientation: DoorOrientation,
     pub state: DoorState,
+    pub close_timer: f32, // Time before door closes after pawn leaves
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -78,6 +79,7 @@ impl Door {
         Self {
             orientation,
             state: DoorState::Closed,
+            close_timer: 0.0,
         }
     }
 
@@ -134,8 +136,8 @@ impl WallMaterial {
     pub fn color(&self) -> Color {
         match self {
             WallMaterial::Wood => Color::srgb(0.6, 0.4, 0.2),
-            WallMaterial::Stone => Color::srgb(0.5, 0.5, 0.5),
-            WallMaterial::Concrete => Color::srgb(0.7, 0.7, 0.7),
+            WallMaterial::Stone => Color::srgb(0.55, 0.52, 0.48),  // Warmer, lighter stone
+            WallMaterial::Concrete => Color::srgb(0.65, 0.62, 0.58),  // Warmer concrete
         }
     }
 }

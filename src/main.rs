@@ -8,7 +8,7 @@ use systems::{
     AsciiRendererPlugin, BuildingPlugin, EconomyPlugin, GridPlugin, PawnPlugin,
     RoomDetectionPlugin, SaveLoadPlugin, TimeControlPlugin, WorkPlugin, ZoneVisualizationPlugin,
 };
-use ui::{MoneyDisplayPlugin, SpeedControlPlugin, ToolbarPlugin, WorkAssignmentsPlugin};
+use ui::{MoneyDisplayPlugin, SaveLoadPanelPlugin, SpeedControlPlugin, ToolbarPlugin, WorkAssignmentsPlugin};
 
 // Tile system constants
 // In RimWorld, a pawn occupies 1 tile. In our game, a pawn will occupy 2x2 tiles (4 tiles)
@@ -31,6 +31,7 @@ fn main() {
             SpeedControlPlugin,
             MoneyDisplayPlugin,
             WorkAssignmentsPlugin,
+            SaveLoadPanelPlugin,
             BuildingPlugin,
             SaveLoadPlugin,
             PawnPlugin,
