@@ -1,18 +1,22 @@
+use crate::components::*;
+use crate::systems::building::BuildingMap;
+use crate::systems::grid::*;
 use bevy::prelude::*;
 use std::collections::{HashSet, VecDeque};
-use crate::components::*;
-use crate::systems::grid::*;
-use crate::systems::building::BuildingMap;
 
 pub struct RoomDetectionPlugin;
 
 impl Plugin for RoomDetectionPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, (
-            detect_rooms,
-            auto_assign_bedroom_zones,
-            auto_assign_lobby_zones,
-        ).chain());
+        app.add_systems(
+            Update,
+            (
+                detect_rooms,
+                auto_assign_bedroom_zones,
+                auto_assign_lobby_zones,
+            )
+                .chain(),
+        );
     }
 }
 
@@ -58,13 +62,19 @@ fn find_enclosed_rooms(
             let pos = IVec2::new(x, y);
 
             // Skip if already visited, occupied by a wall, or has a door
-            if visited.contains(&pos) || building_map.is_occupied(pos) || building_map.doors.contains_key(&pos) {
+            if visited.contains(&pos)
+                || building_map.is_occupied(pos)
+                || building_map.doors.contains_key(&pos)
+            {
                 continue;
             }
 
             // Flood fill from this position
-            if let Some(room_tiles) = flood_fill_room(pos, building_map, grid_settings, &mut visited) {
-                if room_tiles.len() >= 4 {  // Minimum room size
+            if let Some(room_tiles) =
+                flood_fill_room(pos, building_map, grid_settings, &mut visited)
+            {
+                if room_tiles.len() >= 4 {
+                    // Minimum room size
                     rooms.push(room_tiles);
                 }
             }
@@ -94,8 +104,11 @@ fn flood_fill_room(
         }
 
         // Check if we're at the edge of the map (not enclosed)
-        if pos.x <= 0 || pos.x >= grid_settings.width - 1 ||
-           pos.y <= 0 || pos.y >= grid_settings.height - 1 {
+        if pos.x <= 0
+            || pos.x >= grid_settings.width - 1
+            || pos.y <= 0
+            || pos.y >= grid_settings.height - 1
+        {
             is_enclosed = false;
             // Continue anyway to mark all tiles as visited
         }
@@ -113,13 +126,19 @@ fn flood_fill_room(
 
         for neighbor in neighbors {
             // Skip if out of bounds
-            if neighbor.x < 0 || neighbor.x >= grid_settings.width ||
-               neighbor.y < 0 || neighbor.y >= grid_settings.height {
+            if neighbor.x < 0
+                || neighbor.x >= grid_settings.width
+                || neighbor.y < 0
+                || neighbor.y >= grid_settings.height
+            {
                 continue;
             }
 
             // Skip if already visited, occupied by a wall, or has a door (doors divide rooms)
-            if visited.contains(&neighbor) || building_map.is_occupied(neighbor) || building_map.doors.contains_key(&neighbor) {
+            if visited.contains(&neighbor)
+                || building_map.is_occupied(neighbor)
+                || building_map.doors.contains_key(&neighbor)
+            {
                 continue;
             }
 
@@ -145,9 +164,9 @@ fn auto_assign_bedroom_zones(
 ) {
     for (room_entity, room) in &room_query {
         // Check if this room contains a bed
-        let has_bed = bed_query.iter().any(|bed_pos| {
-            room.contains_tile(bed_pos.to_ivec2())
-        });
+        let has_bed = bed_query
+            .iter()
+            .any(|bed_pos| room.contains_tile(bed_pos.to_ivec2()));
 
         if !has_bed {
             continue;
@@ -165,8 +184,9 @@ fn auto_assign_bedroom_zones(
         // Check if a zone already exists for this room
         let mut zone_exists = false;
         for (_, mut zone) in &mut existing_zones {
-            if zone.zone_type == ZoneType::GuestBedroom &&
-               zone.tiles.iter().any(|tile| room.contains_tile(*tile)) {
+            if zone.zone_type == ZoneType::GuestBedroom
+                && zone.tiles.iter().any(|tile| room.contains_tile(*tile))
+            {
                 // Update existing zone
                 zone.tiles = room.tiles.clone();
                 zone.quality = quality;
@@ -198,10 +218,10 @@ fn calculate_bedroom_quality(tile_count: usize, furniture_count: usize) -> ZoneQ
 
     // Quality based on furniture
     match furniture_count {
-        0..=1 => ZoneQuality::Basic,      // Just a bed
-        2..=3 => ZoneQuality::Good,       // Bed + nightstand/dresser
-        4..=5 => ZoneQuality::Excellent,  // Bed + multiple furniture
-        _ => ZoneQuality::Luxury,         // Fully furnished
+        0..=1 => ZoneQuality::Basic,     // Just a bed
+        2..=3 => ZoneQuality::Good,      // Bed + nightstand/dresser
+        4..=5 => ZoneQuality::Excellent, // Bed + multiple furniture
+        _ => ZoneQuality::Luxury,        // Fully furnished
     }
 }
 
@@ -215,9 +235,9 @@ fn auto_assign_lobby_zones(
 ) {
     for (room_entity, room) in &room_query {
         // Check if this room contains a reception console
-        let has_console = console_query.iter().any(|console_pos| {
-            room.contains_tile(console_pos.to_ivec2())
-        });
+        let has_console = console_query
+            .iter()
+            .any(|console_pos| room.contains_tile(console_pos.to_ivec2()));
 
         if !has_console {
             continue;
@@ -235,8 +255,9 @@ fn auto_assign_lobby_zones(
         // Check if a zone already exists for this room
         let mut zone_exists = false;
         for (_, mut zone) in &mut existing_zones {
-            if zone.zone_type == ZoneType::Lobby &&
-               zone.tiles.iter().any(|tile| room.contains_tile(*tile)) {
+            if zone.zone_type == ZoneType::Lobby
+                && zone.tiles.iter().any(|tile| room.contains_tile(*tile))
+            {
                 // Update existing zone
                 zone.tiles = room.tiles.clone();
                 zone.quality = quality;
@@ -247,10 +268,7 @@ fn auto_assign_lobby_zones(
 
         if !zone_exists {
             // Create new lobby zone
-            let mut zone = Zone::new(
-                ZoneType::Lobby,
-                format!("Lobby {}", room_entity.index()),
-            );
+            let mut zone = Zone::new(ZoneType::Lobby, format!("Lobby {}", room_entity.index()));
             zone.tiles = room.tiles.clone();
             zone.quality = quality;
 

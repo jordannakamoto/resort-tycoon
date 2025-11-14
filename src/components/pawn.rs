@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use super::GridPosition;
+use bevy::prelude::*;
 
 #[derive(Component)]
 pub struct Pawn {

@@ -64,13 +64,13 @@ impl ZoneType {
 
     pub fn color(&self) -> Color {
         match self {
-            ZoneType::Lobby => Color::srgba(0.7, 0.7, 0.9, 0.3),          // Light purple
-            ZoneType::GuestBedroom => Color::srgba(0.5, 0.7, 1.0, 0.3),   // Light blue
-            ZoneType::Relaxation => Color::srgba(0.5, 1.0, 0.7, 0.3),     // Light green
-            ZoneType::Luxury => Color::srgba(1.0, 0.8, 0.3, 0.3),         // Gold
-            ZoneType::FamilyFun => Color::srgba(1.0, 0.5, 0.7, 0.3),      // Pink
-            ZoneType::Adventure => Color::srgba(1.0, 0.5, 0.2, 0.3),      // Orange
-            ZoneType::Culinary => Color::srgba(0.9, 0.3, 0.3, 0.3),       // Red
+            ZoneType::Lobby => Color::srgba(0.7, 0.7, 0.9, 0.3), // Light purple
+            ZoneType::GuestBedroom => Color::srgba(0.5, 0.7, 1.0, 0.3), // Light blue
+            ZoneType::Relaxation => Color::srgba(0.5, 1.0, 0.7, 0.3), // Light green
+            ZoneType::Luxury => Color::srgba(1.0, 0.8, 0.3, 0.3), // Gold
+            ZoneType::FamilyFun => Color::srgba(1.0, 0.5, 0.7, 0.3), // Pink
+            ZoneType::Adventure => Color::srgba(1.0, 0.5, 0.2, 0.3), // Orange
+            ZoneType::Culinary => Color::srgba(0.9, 0.3, 0.3, 0.3), // Red
         }
     }
 
@@ -78,11 +78,11 @@ impl ZoneType {
     pub fn requirements(&self) -> ZoneRequirements {
         match self {
             ZoneType::Lobby => ZoneRequirements {
-                min_tiles: 15,  // Modest lobby area
+                min_tiles: 15, // Modest lobby area
                 required_furniture: vec![RequiredFurniture::ReceptionConsole],
             },
             ZoneType::GuestBedroom => ZoneRequirements {
-                min_tiles: 12,  // At least a small room (roughly 3x4 tiles)
+                min_tiles: 12, // At least a small room (roughly 3x4 tiles)
                 required_furniture: vec![RequiredFurniture::Bed],
             },
             ZoneType::Relaxation => ZoneRequirements {
@@ -112,11 +112,11 @@ impl ZoneType {
 /// Quality rating for a zone
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum ZoneQuality {
-    None,       // Not valid/missing requirements
-    Basic,      // Meets minimum requirements
-    Good,       // Has some optional features
-    Excellent,  // Has most/all optional features
-    Luxury,     // Exceeds all expectations
+    None,      // Not valid/missing requirements
+    Basic,     // Meets minimum requirements
+    Good,      // Has some optional features
+    Excellent, // Has most/all optional features
+    Luxury,    // Exceeds all expectations
 }
 
 impl ZoneQuality {
@@ -165,9 +165,7 @@ pub struct Room {
 
 impl Room {
     pub fn new(tiles: HashSet<IVec2>) -> Self {
-        Self {
-            tiles,
-        }
+        Self { tiles }
     }
 
     pub fn contains_tile(&self, pos: IVec2) -> bool {

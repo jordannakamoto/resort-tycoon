@@ -1,17 +1,25 @@
-use bevy::prelude::*;
-use bevy::sprite::*;
-use bevy::window::{PrimaryWindow, Window as BevyWindow};
 use crate::components::*;
 use crate::systems::grid::*;
 use crate::systems::Money;
-use crate::ui::{ToolbarState, BuildingType};
+use crate::ui::{BuildingType, OrderType, ToolbarState, UiInputBlocker};
+use bevy::prelude::*;
+use bevy::sprite::*;
+use bevy::window::{PrimaryWindow, Window as BevyWindow};
+use std::collections::HashSet;
+use std::f32::consts::{FRAC_PI_2, PI};
+
+const SINGLE_BED_SPRITE_PATH: &str = "generated/furniture/bed.png";
+const DOUBLE_BED_SPRITE_PATH: &str = "generated/furniture/double_bed.png";
+const COMPUTER_FRONT_SPRITE_PATH: &str = "generated/staff/computer.png";
+const COMPUTER_BACK_SPRITE_PATH: &str = "generated/staff/computer_back.png";
+const COMPUTER_SIDE_SPRITE_PATH: &str = "generated/staff/computer_side.png";
 
 #[derive(Resource)]
 pub struct BuildingMap {
-    pub occupied: std::collections::HashSet<IVec2>,      // Walls and windows (block movement)
+    pub occupied: std::collections::HashSet<IVec2>, // Walls and windows (block movement)
     pub walls: std::collections::HashMap<IVec2, Entity>, // Wall entities by position
     pub doors: std::collections::HashMap<IVec2, Entity>, // Door tiles (can pass when open)
-    pub floors: std::collections::HashSet<IVec2>,        // Floors (don't block building)
+    pub floors: std::collections::HashSet<IVec2>,   // Floors (don't block building)
 }
 
 impl Default for BuildingMap {
@@ -47,6 +55,19 @@ impl Default for DoorPlacementState {
     fn default() -> Self {
         Self {
             orientation: DoorOrientation::Horizontal,
+        }
+    }
+}
+
+#[derive(Resource)]
+pub struct FurniturePlacementState {
+    pub orientation: FurnitureOrientation,
+}
+
+impl Default for FurniturePlacementState {
+    fn default() -> Self {
+        Self {
+            orientation: FurnitureOrientation::East,
         }
     }
 }
@@ -103,28 +124,58 @@ impl Plugin for BuildingPlugin {
         app.init_resource::<BuildingMap>()
             .init_resource::<DragState>()
             .init_resource::<DoorPlacementState>()
-            .add_systems(Update, (
-                handle_door_rotation,
-                handle_drag_input,
-                update_placement_preview,
-                handle_building_placement,
-            ).chain());
+            .init_resource::<FurniturePlacementState>()
+            .init_resource::<ContextMenuState>()
+            .init_resource::<UiInputBlocker>()
+            .add_systems(Startup, setup_context_menu)
+            .add_systems(
+                Update,
+                (
+                    handle_rotation_input,
+                    handle_drag_input,
+                    update_placement_preview,
+                    handle_building_placement,
+                    handle_deconstruction_placement,
+                    handle_right_click_deconstruct,
+                    update_context_menu,
+                    handle_context_menu_clicks,
+                    update_wall_projections,
+                )
+                    .chain(),
+            );
     }
 }
 
-fn handle_door_rotation(
+fn handle_rotation_input(
     mut door_state: ResMut<DoorPlacementState>,
+    mut furniture_state: ResMut<FurniturePlacementState>,
     toolbar_state: Res<ToolbarState>,
     keyboard: Res<ButtonInput<KeyCode>>,
 ) {
-    // Only allow rotation when door is selected
-    if toolbar_state.selected_building == Some(BuildingType::Door) {
-        if keyboard.just_pressed(KeyCode::KeyR) {
+    if !keyboard.just_pressed(KeyCode::KeyR) {
+        return;
+    }
+
+    match toolbar_state.selected_building {
+        Some(BuildingType::Door) => {
             door_state.orientation = match door_state.orientation {
                 DoorOrientation::Horizontal => DoorOrientation::Vertical,
                 DoorOrientation::Vertical => DoorOrientation::Horizontal,
             };
         }
+        Some(BuildingType::Furniture(_)) => {
+            furniture_state.orientation = furniture_state.orientation.next();
+        }
+        _ => {}
+    }
+}
+
+fn furniture_rotation_radians(orientation: FurnitureOrientation) -> f32 {
+    match orientation {
+        FurnitureOrientation::East => 0.0,
+        FurnitureOrientation::South => FRAC_PI_2,
+        FurnitureOrientation::West => PI,
+        FurnitureOrientation::North => FRAC_PI_2 * 3.0,
     }
 }
 
@@ -135,6 +186,7 @@ fn handle_drag_input(
     window_query: Query<&BevyWindow, With<PrimaryWindow>>,
     camera_query: Query<(&Camera, &GlobalTransform)>,
     mouse_button: Res<ButtonInput<MouseButton>>,
+    ui_blocker: Res<UiInputBlocker>,
 ) {
     // Allow dragging for walls and floors
     let allow_drag = matches!(
@@ -148,6 +200,10 @@ fn handle_drag_input(
             drag_state.start_pos = None;
             drag_state.current_pos = None;
         }
+        return;
+    }
+
+    if ui_blocker.block_world_input {
         return;
     }
 
@@ -189,12 +245,14 @@ fn update_placement_preview(
     toolbar_state: Res<ToolbarState>,
     drag_state: Res<DragState>,
     door_state: Res<DoorPlacementState>,
+    furniture_state: Res<FurniturePlacementState>,
     grid_settings: Res<GridSettings>,
     window_query: Query<&BevyWindow, With<PrimaryWindow>>,
     camera_query: Query<(&Camera, &GlobalTransform)>,
     preview_query: Query<Entity, With<PlacementPreview>>,
     building_map: Res<BuildingMap>,
     desk_query: Query<&GridPosition, With<Desk>>,
+    ui_blocker: Res<UiInputBlocker>,
 ) {
     let window = window_query.single();
     let (camera, camera_transform) = camera_query.single();
@@ -204,10 +262,16 @@ fn update_placement_preview(
         commands.entity(entity).despawn();
     }
 
+    if ui_blocker.block_world_input {
+        return;
+    }
+
     // Only show preview if a building is selected
     if let Some(building_type) = toolbar_state.selected_building {
         // If dragging walls or floors, show all positions in the drag area
-        let is_dragging_multi = matches!(building_type, BuildingType::Wall | BuildingType::Floor(_)) && drag_state.is_dragging;
+        let is_dragging_multi =
+            matches!(building_type, BuildingType::Wall | BuildingType::Floor(_))
+                && drag_state.is_dragging;
 
         if is_dragging_multi {
             let positions = drag_state.get_drag_positions();
@@ -232,7 +296,10 @@ fn update_placement_preview(
                 };
 
                 commands.spawn((
-                    Mesh2d(meshes.add(Rectangle::new(grid_settings.tile_size, grid_settings.tile_size))),
+                    Mesh2d(meshes.add(Rectangle::new(
+                        grid_settings.tile_size,
+                        grid_settings.tile_size,
+                    ))),
                     MeshMaterial2d(materials.add(color)),
                     Transform::from_xyz(world_pos.x, world_pos.y, 1.0),
                     PlacementPreview,
@@ -264,8 +331,12 @@ fn update_placement_preview(
                     // Handle door preview (2x1)
                     if building_type == BuildingType::Door {
                         let door_tiles = match door_state.orientation {
-                            DoorOrientation::Horizontal => vec![grid_pos, grid_pos + IVec2::new(1, 0)],
-                            DoorOrientation::Vertical => vec![grid_pos, grid_pos + IVec2::new(0, 1)],
+                            DoorOrientation::Horizontal => {
+                                vec![grid_pos, grid_pos + IVec2::new(1, 0)]
+                            }
+                            DoorOrientation::Vertical => {
+                                vec![grid_pos, grid_pos + IVec2::new(0, 1)]
+                            }
                         };
 
                         for tile_pos in door_tiles {
@@ -276,7 +347,8 @@ fn update_placement_preview(
                                 grid_settings.height,
                             );
 
-                            let is_blocked = building_map.occupied.contains(&tile_pos) || building_map.doors.contains_key(&tile_pos);
+                            let is_blocked = building_map.occupied.contains(&tile_pos)
+                                || building_map.doors.contains_key(&tile_pos);
                             let color = if is_blocked {
                                 Color::srgba(1.0, 0.3, 0.3, 0.5)
                             } else {
@@ -284,7 +356,10 @@ fn update_placement_preview(
                             };
 
                             commands.spawn((
-                                Mesh2d(meshes.add(Rectangle::new(grid_settings.tile_size, grid_settings.tile_size))),
+                                Mesh2d(meshes.add(Rectangle::new(
+                                    grid_settings.tile_size,
+                                    grid_settings.tile_size,
+                                ))),
                                 MeshMaterial2d(materials.add(color)),
                                 Transform::from_xyz(tile_world_pos.x, tile_world_pos.y, 1.0),
                                 PlacementPreview,
@@ -311,14 +386,18 @@ fn update_placement_preview(
                             };
 
                             commands.spawn((
-                                Mesh2d(meshes.add(Rectangle::new(grid_settings.tile_size, grid_settings.tile_size))),
+                                Mesh2d(meshes.add(Rectangle::new(
+                                    grid_settings.tile_size,
+                                    grid_settings.tile_size,
+                                ))),
                                 MeshMaterial2d(materials.add(color)),
                                 Transform::from_xyz(world_pos.x, world_pos.y, 1.0),
                                 PlacementPreview,
                             ));
                         } else {
                             // Multi-tile furniture preview
-                            let furniture_tiles = furniture_type.tiles_occupied(grid_pos);
+                            let furniture_tiles = furniture_type
+                                .tiles_occupied(grid_pos, furniture_state.orientation);
 
                             for tile_pos in furniture_tiles {
                                 let tile_world_pos = grid_to_world(
@@ -330,7 +409,8 @@ fn update_placement_preview(
 
                                 // Furniture needs floor and available space
                                 let has_floor = building_map.floors.contains(&tile_pos);
-                                let is_occupied = building_map.occupied.contains(&tile_pos) || building_map.doors.contains_key(&tile_pos);
+                                let is_occupied = building_map.occupied.contains(&tile_pos)
+                                    || building_map.doors.contains_key(&tile_pos);
                                 let is_blocked = !has_floor || is_occupied;
 
                                 let color = if is_blocked {
@@ -340,7 +420,10 @@ fn update_placement_preview(
                                 };
 
                                 commands.spawn((
-                                    Mesh2d(meshes.add(Rectangle::new(grid_settings.tile_size, grid_settings.tile_size))),
+                                    Mesh2d(meshes.add(Rectangle::new(
+                                        grid_settings.tile_size,
+                                        grid_settings.tile_size,
+                                    ))),
                                     MeshMaterial2d(materials.add(color)),
                                     Transform::from_xyz(tile_world_pos.x, tile_world_pos.y, 1.0),
                                     PlacementPreview,
@@ -357,7 +440,10 @@ fn update_placement_preview(
                         };
 
                         commands.spawn((
-                            Mesh2d(meshes.add(Rectangle::new(grid_settings.tile_size, grid_settings.tile_size))),
+                            Mesh2d(meshes.add(Rectangle::new(
+                                grid_settings.tile_size,
+                                grid_settings.tile_size,
+                            ))),
                             MeshMaterial2d(materials.add(color)),
                             Transform::from_xyz(world_pos.x, world_pos.y, 1.0),
                             PlacementPreview,
@@ -376,17 +462,25 @@ fn handle_building_placement(
     toolbar_state: Res<ToolbarState>,
     mut drag_state: ResMut<DragState>,
     door_state: Res<DoorPlacementState>,
+    furniture_state: Res<FurniturePlacementState>,
     grid_settings: Res<GridSettings>,
     window_query: Query<&BevyWindow, With<PrimaryWindow>>,
     camera_query: Query<(&Camera, &GlobalTransform)>,
     mouse_button: Res<ButtonInput<MouseButton>>,
     mut building_map: ResMut<BuildingMap>,
     mut money: ResMut<Money>,
+    asset_server: Res<AssetServer>,
     desk_query: Query<&GridPosition, With<Desk>>,
+    ui_blocker: Res<UiInputBlocker>,
 ) {
+    if ui_blocker.block_world_input {
+        return;
+    }
+
     if let Some(building_type) = toolbar_state.selected_building {
         // Handle drag building for walls and floors
-        let is_drag_buildable = matches!(building_type, BuildingType::Wall | BuildingType::Floor(_));
+        let is_drag_buildable =
+            matches!(building_type, BuildingType::Wall | BuildingType::Floor(_));
 
         if is_drag_buildable && mouse_button.just_released(MouseButton::Left) {
             if let Some((start, end)) = drag_state.end() {
@@ -490,8 +584,12 @@ fn handle_building_placement(
                         // Handle door placement (2x1)
                         if building_type == BuildingType::Door {
                             let door_tiles = match door_state.orientation {
-                                DoorOrientation::Horizontal => vec![grid_pos, grid_pos + IVec2::new(1, 0)],
-                                DoorOrientation::Vertical => vec![grid_pos, grid_pos + IVec2::new(0, 1)],
+                                DoorOrientation::Horizontal => {
+                                    vec![grid_pos, grid_pos + IVec2::new(1, 0)]
+                                }
+                                DoorOrientation::Vertical => {
+                                    vec![grid_pos, grid_pos + IVec2::new(0, 1)]
+                                }
                             };
 
                             // Check if all tiles are available (walls can be replaced, but not doors or windows)
@@ -528,12 +626,26 @@ fn handle_building_placement(
                             // Calculate center position for door
                             let center_pos = match door_state.orientation {
                                 DoorOrientation::Horizontal => Vec2::new(
-                                    (door_tiles[0].x + door_tiles[1].x) as f32 * grid_settings.tile_size / 2.0 - (grid_settings.width as f32 * grid_settings.tile_size) / 2.0,
-                                    door_tiles[0].y as f32 * grid_settings.tile_size - (grid_settings.height as f32 * grid_settings.tile_size) / 2.0 + grid_settings.tile_size / 2.0,
+                                    (door_tiles[0].x + door_tiles[1].x) as f32
+                                        * grid_settings.tile_size
+                                        / 2.0
+                                        - (grid_settings.width as f32 * grid_settings.tile_size)
+                                            / 2.0,
+                                    door_tiles[0].y as f32 * grid_settings.tile_size
+                                        - (grid_settings.height as f32 * grid_settings.tile_size)
+                                            / 2.0
+                                        + grid_settings.tile_size / 2.0,
                                 ),
                                 DoorOrientation::Vertical => Vec2::new(
-                                    door_tiles[0].x as f32 * grid_settings.tile_size - (grid_settings.width as f32 * grid_settings.tile_size) / 2.0 + grid_settings.tile_size / 2.0,
-                                    (door_tiles[0].y + door_tiles[1].y) as f32 * grid_settings.tile_size / 2.0 - (grid_settings.height as f32 * grid_settings.tile_size) / 2.0,
+                                    door_tiles[0].x as f32 * grid_settings.tile_size
+                                        - (grid_settings.width as f32 * grid_settings.tile_size)
+                                            / 2.0
+                                        + grid_settings.tile_size / 2.0,
+                                    (door_tiles[0].y + door_tiles[1].y) as f32
+                                        * grid_settings.tile_size
+                                        / 2.0
+                                        - (grid_settings.height as f32 * grid_settings.tile_size)
+                                            / 2.0,
                                 ),
                             };
 
@@ -588,32 +700,54 @@ fn handle_building_placement(
                                     grid_settings.height,
                                 );
 
-                                // Spawn reception console on top of the desk
-                                let console_entity = commands.spawn((
-                                    Mesh2d(meshes.add(Rectangle::new(
-                                        grid_settings.tile_size,
-                                        grid_settings.tile_size,
-                                    ))),
-                                    MeshMaterial2d(materials.add(furniture_type.color())),
-                                    Transform::from_xyz(base_world_pos.x, base_world_pos.y, 3.5), // Higher than desk (3.0)
+                                let orientation = furniture_state.orientation;
+                                let (sprite_path, flip_x) = match orientation {
+                                    FurnitureOrientation::East => {
+                                        (COMPUTER_SIDE_SPRITE_PATH, false)
+                                    }
+                                    FurnitureOrientation::West => (COMPUTER_SIDE_SPRITE_PATH, true),
+                                    FurnitureOrientation::South => {
+                                        (COMPUTER_FRONT_SPRITE_PATH, false)
+                                    }
+                                    FurnitureOrientation::North => {
+                                        (COMPUTER_BACK_SPRITE_PATH, false)
+                                    }
+                                };
+
+                                let mut sprite = Sprite {
+                                    image: asset_server.load(sprite_path),
+                                    custom_size: Some(Vec2::splat(grid_settings.tile_size * 0.9)),
+                                    ..default()
+                                };
+                                sprite.flip_x = flip_x;
+
+                                commands.spawn((
+                                    sprite,
+                                    Transform::from_xyz(base_world_pos.x, base_world_pos.y, 3.5),
                                     GridPosition::new(grid_pos.x, grid_pos.y),
                                     Furniture,
                                     ReceptionConsole::new(),
-                                )).id();
+                                ));
 
                                 // Don't mark tiles as occupied - desk already occupies them
                                 return;
                             }
 
                             // Handle regular furniture placement
-                            let furniture_tiles = furniture_type.tiles_occupied(grid_pos);
-                            let (width_mult, height_mult) = furniture_type.size();
+                            let orientation = furniture_state.orientation;
+                            let furniture_tiles =
+                                furniture_type.tiles_occupied(grid_pos, orientation);
+                            let (width_tiles, height_tiles) =
+                                furniture_type.oriented_dimensions(orientation);
+                            let width_mult = width_tiles as f32;
+                            let height_mult = height_tiles as f32;
+                            let rotation_radians = furniture_rotation_radians(orientation);
 
                             // Check if all tiles have floors and are available
                             let can_place = furniture_tiles.iter().all(|pos| {
-                                building_map.floors.contains(pos) &&
-                                !building_map.occupied.contains(pos) &&
-                                !building_map.doors.contains_key(pos)
+                                building_map.floors.contains(pos)
+                                    && !building_map.occupied.contains(pos)
+                                    && !building_map.doors.contains_key(pos)
                             });
 
                             if !can_place {
@@ -644,16 +778,58 @@ fn handle_building_placement(
                             let furniture_pos = base_world_pos + offset;
 
                             // Spawn furniture directly (no construction needed)
-                            let furniture_entity = commands.spawn((
-                                Mesh2d(meshes.add(Rectangle::new(
-                                    width_mult * grid_settings.tile_size,
-                                    height_mult * grid_settings.tile_size,
-                                ))),
-                                MeshMaterial2d(materials.add(furniture_type.color())),
-                                Transform::from_xyz(furniture_pos.x, furniture_pos.y, 3.0), // Above floors and structures
-                                GridPosition::new(grid_pos.x, grid_pos.y),
-                                Furniture,
-                            )).id();
+                            let furniture_entity = match furniture_type {
+                                FurnitureType::Bed(bed_type) => {
+                                    let (base_width_tiles, base_height_tiles) =
+                                        furniture_type.base_dimensions();
+                                    let sprite_size = Vec2::new(
+                                        base_width_tiles as f32 * grid_settings.tile_size,
+                                        base_height_tiles as f32 * grid_settings.tile_size,
+                                    );
+
+                                    let sprite_path = match bed_type {
+                                        BedType::Single => SINGLE_BED_SPRITE_PATH,
+                                        BedType::Double => DOUBLE_BED_SPRITE_PATH,
+                                    };
+
+                                    let mut transform =
+                                        Transform::from_xyz(furniture_pos.x, furniture_pos.y, 3.0);
+                                    transform.rotate_z(rotation_radians);
+
+                                    commands
+                                        .spawn((
+                                            Sprite {
+                                                image: asset_server.load(sprite_path),
+                                                custom_size: Some(sprite_size),
+                                                ..default()
+                                            },
+                                            transform,
+                                            GridPosition::new(grid_pos.x, grid_pos.y),
+                                            Furniture,
+                                        ))
+                                        .id()
+                                }
+                                _ => {
+                                    let (base_width_tiles, base_height_tiles) =
+                                        furniture_type.base_dimensions();
+                                    let mut transform =
+                                        Transform::from_xyz(furniture_pos.x, furniture_pos.y, 3.0);
+                                    transform.rotate_z(rotation_radians);
+
+                                    commands
+                                        .spawn((
+                                            Mesh2d(meshes.add(Rectangle::new(
+                                                base_width_tiles as f32 * grid_settings.tile_size,
+                                                base_height_tiles as f32 * grid_settings.tile_size,
+                                            ))),
+                                            MeshMaterial2d(materials.add(furniture_type.color())),
+                                            transform,
+                                            GridPosition::new(grid_pos.x, grid_pos.y),
+                                            Furniture,
+                                        ))
+                                        .id()
+                                }
+                            };
 
                             // Add specific furniture component
                             match furniture_type {
@@ -673,7 +849,9 @@ fn handle_building_placement(
                                     commands.entity(furniture_entity).insert(Nightstand);
                                 }
                                 FurnitureType::ReceptionConsole => {
-                                    commands.entity(furniture_entity).insert(ReceptionConsole::new());
+                                    commands
+                                        .entity(furniture_entity)
+                                        .insert(ReceptionConsole::new());
                                 }
                             }
 
@@ -688,7 +866,8 @@ fn handle_building_placement(
                                 BuildingType::Window => {
                                     // Windows can replace walls
                                     let has_wall = building_map.walls.contains_key(&grid_pos);
-                                    let has_other = building_map.occupied.contains(&grid_pos) && !has_wall;
+                                    let has_other =
+                                        building_map.occupied.contains(&grid_pos) && !has_wall;
                                     has_other || building_map.doors.contains_key(&grid_pos)
                                 }
                                 _ => building_map.occupied.contains(&grid_pos),
@@ -786,14 +965,15 @@ fn spawn_blueprint(
         }
     };
 
-    commands.spawn((
-        Mesh2d(meshes.add(Rectangle::new(tile_size, tile_size))),
-        MeshMaterial2d(materials.add(color)),
-        Transform::from_xyz(world_pos.x, world_pos.y, z_level),
-        Blueprint::new(blueprint_type),
-        GridPosition::new(grid_pos.x, grid_pos.y),
-    ))
-    .id()
+    commands
+        .spawn((
+        Mesh2d(meshes.add(Rectangle::new(tile_size, tile_size * WINDOW_THICKNESS))),
+            MeshMaterial2d(materials.add(color)),
+            Transform::from_xyz(world_pos.x, world_pos.y, z_level),
+            Blueprint::new(blueprint_type),
+            GridPosition::new(grid_pos.x, grid_pos.y),
+        ))
+        .id()
 }
 
 fn spawn_door_blueprint(
@@ -808,22 +988,373 @@ fn spawn_door_blueprint(
     let (width, height, offset) = match orientation {
         DoorOrientation::Horizontal => {
             // 2 tiles wide: shift right by half a tile to center between both tiles
-            (tile_size * 2.0, tile_size, Vec2::new(tile_size / 2.0, 0.0))
+            (
+                tile_size * 2.0,
+                tile_size * DOOR_THICKNESS,
+                Vec2::new(tile_size / 2.0, 0.0),
+            )
         }
         DoorOrientation::Vertical => {
             // 2 tiles tall: shift up by half a tile to center between both tiles
-            (tile_size, tile_size * 2.0, Vec2::new(0.0, tile_size / 2.0))
+            (
+                tile_size * DOOR_THICKNESS,
+                tile_size * 2.0,
+                Vec2::new(0.0, tile_size / 2.0),
+            )
         }
     };
 
     let adjusted_pos = center_pos + offset;
 
-    commands.spawn((
-        Mesh2d(meshes.add(Rectangle::new(width, height))),
-        MeshMaterial2d(materials.add(Color::srgba(0.4, 0.3, 0.2, 0.5))),
-        Transform::from_xyz(adjusted_pos.x, adjusted_pos.y, 1.5),
-        Blueprint::new(BlueprintType::Door(orientation)),
-        GridPosition::new(grid_pos.x, grid_pos.y),
-    ))
-    .id()
+    commands
+        .spawn((
+            Mesh2d(meshes.add(Rectangle::new(width, height))),
+            MeshMaterial2d(materials.add(Color::srgba(0.4, 0.3, 0.2, 0.5))),
+            Transform::from_xyz(adjusted_pos.x, adjusted_pos.y, 1.5),
+            Blueprint::new(BlueprintType::Door(orientation)),
+            GridPosition::new(grid_pos.x, grid_pos.y),
+        ))
+        .id()
+}
+
+// Handle left-click deconstruction placement with Deconstruct order selected
+fn handle_deconstruction_placement(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+    toolbar_state: Res<ToolbarState>,
+    mut drag_state: ResMut<DragState>,
+    grid_settings: Res<GridSettings>,
+    window_query: Query<&BevyWindow, With<PrimaryWindow>>,
+    camera_query: Query<(&Camera, &GlobalTransform)>,
+    mouse_button: Res<ButtonInput<MouseButton>>,
+    deconstructible_query: Query<
+        (Entity, &GridPosition, &Transform),
+        Or<(
+            With<Wall>,
+            With<Door>,
+            With<crate::components::Window>,
+            With<Furniture>,
+        )>,
+    >,
+    marker_query: Query<&DeconstructionMarker>,
+    ui_blocker: Res<UiInputBlocker>,
+) {
+    // Only handle when deconstruct order is selected
+    if toolbar_state.selected_order != Some(OrderType::Deconstruct) {
+        return;
+    }
+
+    if ui_blocker.block_world_input {
+        return;
+    }
+
+    let window = window_query.single();
+    let (camera, camera_transform) = camera_query.single();
+
+    if let Some(cursor_pos) = window.cursor_position() {
+        // Ignore clicks in toolbar area
+        const TOOLBAR_HEIGHT: f32 = 80.0;
+        if cursor_pos.y > window.height() - TOOLBAR_HEIGHT {
+            return;
+        }
+
+        if let Ok(world_pos) = camera.viewport_to_world_2d(camera_transform, cursor_pos) {
+            if let Some(grid_pos) = world_to_grid(
+                world_pos,
+                grid_settings.tile_size,
+                grid_settings.width,
+                grid_settings.height,
+            ) {
+                // Start drag on mouse press
+                if mouse_button.just_pressed(MouseButton::Left) {
+                    drag_state.start(grid_pos);
+                }
+                // Update drag position while holding
+                else if mouse_button.pressed(MouseButton::Left) && drag_state.is_dragging {
+                    drag_state.update(grid_pos);
+                }
+            }
+        }
+    }
+
+    // Handle drag end
+    if mouse_button.just_released(MouseButton::Left) && drag_state.is_dragging {
+        if let Some((start, end)) = drag_state.end() {
+            let min_x = start.x.min(end.x);
+            let max_x = start.x.max(end.x);
+            let min_y = start.y.min(end.y);
+            let max_y = start.y.max(end.y);
+
+            for x in min_x..=max_x {
+                for y in min_y..=max_y {
+                    let grid_pos = IVec2::new(x, y);
+                    // Find deconstructible entity at this position
+                    for (entity, entity_grid_pos, entity_transform) in &deconstructible_query {
+                        if entity_grid_pos.to_ivec2() == grid_pos {
+                            // Check if already marked for deconstruction
+                            let already_marked = marker_query
+                                .iter()
+                                .any(|marker| marker.target_entity == entity);
+                            if already_marked {
+                                continue;
+                            }
+
+                            // Create deconstruction marker
+                            let marker_entity = commands
+                                .spawn((
+                                    Mesh2d(meshes.add(Rectangle::new(
+                                        grid_settings.tile_size,
+                                        grid_settings.tile_size,
+                                    ))),
+                                    MeshMaterial2d(materials.add(Color::srgba(1.0, 0.0, 0.0, 0.4))),
+                                    Transform::from_xyz(
+                                        entity_transform.translation.x,
+                                        entity_transform.translation.y,
+                                        10.0, // High z-level to render on top
+                                    ),
+                                    DeconstructionMarker::new(entity),
+                                    GridPosition::new(grid_pos.x, grid_pos.y),
+                                ))
+                                .id();
+
+                            // Create deconstruction job
+                            commands.spawn(DeconstructionJob::new(marker_entity));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[derive(Resource, Default)]
+pub struct ContextMenuState {
+    pub visible: bool,
+    pub target_entity: Option<Entity>,
+    pub position: Vec2,
+}
+
+// Handle right-click to show context menu
+fn handle_right_click_deconstruct(
+    mut context_menu_state: ResMut<ContextMenuState>,
+    grid_settings: Res<GridSettings>,
+    window_query: Query<&BevyWindow, With<PrimaryWindow>>,
+    camera_query: Query<(&Camera, &GlobalTransform)>,
+    mouse_button: Res<ButtonInput<MouseButton>>,
+    deconstructible_query: Query<
+        (Entity, &GridPosition),
+        Or<(
+            With<Wall>,
+            With<Door>,
+            With<crate::components::Window>,
+            With<Furniture>,
+        )>,
+    >,
+    ui_blocker: Res<UiInputBlocker>,
+) {
+    if !mouse_button.just_pressed(MouseButton::Right) {
+        return;
+    }
+
+    if ui_blocker.block_world_input {
+        return;
+    }
+
+    let window = window_query.single();
+    let (camera, camera_transform) = camera_query.single();
+
+    if let Some(cursor_pos) = window.cursor_position() {
+        // Ignore clicks in toolbar area
+        const TOOLBAR_HEIGHT: f32 = 80.0;
+        if cursor_pos.y > window.height() - TOOLBAR_HEIGHT {
+            return;
+        }
+
+        if let Ok(world_pos) = camera.viewport_to_world_2d(camera_transform, cursor_pos) {
+            if let Some(grid_pos) = world_to_grid(
+                world_pos,
+                grid_settings.tile_size,
+                grid_settings.width,
+                grid_settings.height,
+            ) {
+                // Find deconstructible entity at this position
+                for (entity, entity_grid_pos) in &deconstructible_query {
+                    if entity_grid_pos.to_ivec2() == grid_pos {
+                        // Show context menu
+                        context_menu_state.visible = true;
+                        context_menu_state.target_entity = Some(entity);
+                        context_menu_state.position = cursor_pos;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    // Close menu if clicking elsewhere
+    context_menu_state.visible = false;
+}
+
+#[derive(Component)]
+struct ContextMenu;
+
+#[derive(Component)]
+struct DeconstructButton;
+
+fn setup_context_menu(mut commands: Commands) {
+    // Create hidden context menu
+    commands
+        .spawn((
+            Node {
+                position_type: PositionType::Absolute,
+                width: Val::Px(120.0),
+                height: Val::Px(40.0),
+                flex_direction: FlexDirection::Column,
+                display: Display::None, // Hidden by default
+                ..default()
+            },
+            BackgroundColor(Color::srgb(0.2, 0.2, 0.2)),
+            ContextMenu,
+        ))
+        .with_children(|parent| {
+            parent
+                .spawn((
+                    Button,
+                    Node {
+                        width: Val::Percent(100.0),
+                        height: Val::Px(40.0),
+                        justify_content: JustifyContent::Center,
+                        align_items: AlignItems::Center,
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgb(0.3, 0.3, 0.3)),
+                    DeconstructButton,
+                ))
+                .with_children(|parent| {
+                    parent.spawn((
+                        Text::new("Deconstruct"),
+                        TextFont {
+                            font_size: 14.0,
+                            ..default()
+                        },
+                        TextColor(Color::WHITE),
+                    ));
+                });
+        });
+}
+
+fn update_context_menu(
+    mut menu_query: Query<&mut Node, With<ContextMenu>>,
+    context_menu_state: Res<ContextMenuState>,
+    mut ui_blocker: ResMut<UiInputBlocker>,
+) {
+    for mut node in &mut menu_query {
+        if context_menu_state.visible {
+            node.display = Display::Flex;
+            node.left = Val::Px(context_menu_state.position.x);
+            node.top = Val::Px(context_menu_state.position.y);
+        } else {
+            node.display = Display::None;
+        }
+    }
+
+    ui_blocker.context_menu_blocking = context_menu_state.visible;
+    ui_blocker.recompute();
+}
+
+fn handle_context_menu_clicks(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+    mut interaction_query: Query<(&Interaction, &DeconstructButton), Changed<Interaction>>,
+    mut context_menu_state: ResMut<ContextMenuState>,
+    deconstructible_query: Query<
+        (&GridPosition, &Transform),
+        Or<(
+            With<Wall>,
+            With<Door>,
+            With<crate::components::Window>,
+            With<Furniture>,
+        )>,
+    >,
+    marker_query: Query<&DeconstructionMarker>,
+    grid_settings: Res<GridSettings>,
+) {
+    for (interaction, _) in &mut interaction_query {
+        if *interaction == Interaction::Pressed {
+            if let Some(target_entity) = context_menu_state.target_entity {
+                // Check if already marked
+                let already_marked = marker_query
+                    .iter()
+                    .any(|marker| marker.target_entity == target_entity);
+
+                if !already_marked {
+                    if let Ok((grid_pos, transform)) = deconstructible_query.get(target_entity) {
+                        // Create deconstruction marker
+                        let marker_entity = commands
+                            .spawn((
+                                Mesh2d(meshes.add(Rectangle::new(
+                                    grid_settings.tile_size,
+                                    grid_settings.tile_size,
+                                ))),
+                                MeshMaterial2d(materials.add(Color::srgba(1.0, 0.0, 0.0, 0.4))),
+                                Transform::from_xyz(
+                                    transform.translation.x,
+                                    transform.translation.y,
+                                    10.0,
+                                ),
+                                DeconstructionMarker::new(target_entity),
+                                GridPosition::new(grid_pos.x, grid_pos.y),
+                            ))
+                            .id();
+
+                        commands.spawn(DeconstructionJob::new(marker_entity));
+                    }
+                }
+            }
+
+            // Close context menu
+            context_menu_state.visible = false;
+        }
+    }
+}
+
+// Update wall projections based on adjacent walls
+fn update_wall_projections(
+    mut commands: Commands,
+    structure_query: Query<
+        (Entity, &GridPosition, Option<&WallProjection>),
+        Or<(With<Wall>, With<crate::components::Window>)>,
+    >,
+    all_structures_query: Query<&GridPosition, Or<(With<Wall>, With<crate::components::Window>)>>,
+) {
+    let occupied_positions: HashSet<IVec2> = all_structures_query
+        .iter()
+        .map(|pos| pos.to_ivec2())
+        .collect();
+
+    for (entity, pos, existing_projection) in &structure_query {
+        let current_pos = pos.to_ivec2();
+
+        let has_north_structure = occupied_positions.contains(&(current_pos + IVec2::new(0, 1)));
+        let has_east_structure = occupied_positions.contains(&(current_pos + IVec2::new(1, 0)));
+        let has_west_structure = occupied_positions.contains(&(current_pos + IVec2::new(-1, 0)));
+
+        let mut projection = WallProjection::new();
+        if !has_north_structure {
+            projection = projection.with_north();
+        }
+        if !has_east_structure {
+            projection = projection.with_east();
+        }
+        if !has_west_structure {
+            projection = projection.with_west();
+        }
+
+        if existing_projection.copied() != Some(projection) {
+            commands.entity(entity).insert(projection);
+        }
+    }
 }

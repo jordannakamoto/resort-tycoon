@@ -1,4 +1,8 @@
 use bevy::prelude::*;
+use serde::{Deserialize, Serialize};
+
+pub const DOOR_THICKNESS: f32 = 0.6;
+pub const WINDOW_THICKNESS: f32 = 0.75;
 
 #[derive(Component, Debug, Clone, Copy)]
 pub struct GridPosition {
@@ -19,19 +23,51 @@ impl GridPosition {
 #[derive(Component)]
 pub struct Wall;
 
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq)]
+pub struct WallProjection {
+    pub north: bool, // Has projection on top
+    pub east: bool,  // Has projection on right
+    pub west: bool,  // Has projection on left
+}
+
+impl WallProjection {
+    pub fn new() -> Self {
+        Self {
+            north: false,
+            east: false,
+            west: false,
+        }
+    }
+
+    pub fn with_north(mut self) -> Self {
+        self.north = true;
+        self
+    }
+
+    pub fn with_east(mut self) -> Self {
+        self.east = true;
+        self
+    }
+
+    pub fn with_west(mut self) -> Self {
+        self.west = true;
+        self
+    }
+}
+
 #[derive(Component)]
 pub struct Door {
     pub orientation: DoorOrientation,
     pub state: DoorState,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum DoorOrientation {
     Horizontal, // 2 tiles wide (left-right)
     Vertical,   // 2 tiles tall (up-down)
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum DoorState {
     Closed,
     Open,
@@ -64,7 +100,7 @@ pub struct Floor {
     pub floor_type: FloorType,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum FloorType {
     Wood,
     Stone,

@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::systems::Money;
+use bevy::prelude::*;
 
 #[derive(Component)]
 pub struct MoneyDisplay;

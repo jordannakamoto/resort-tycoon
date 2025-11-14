@@ -1,11 +1,14 @@
 use bevy::prelude::*;
 
-mod ui;
-mod systems;
 mod components;
+mod systems;
+mod ui;
 
-use ui::{ToolbarPlugin, SpeedControlPlugin, MoneyDisplayPlugin};
-use systems::{GridPlugin, BuildingPlugin, PawnPlugin, WorkPlugin, AsciiRendererPlugin, TimeControlPlugin, EconomyPlugin, RoomDetectionPlugin, ZoneVisualizationPlugin};
+use systems::{
+    AsciiRendererPlugin, BuildingPlugin, EconomyPlugin, GridPlugin, PawnPlugin,
+    RoomDetectionPlugin, SaveLoadPlugin, TimeControlPlugin, WorkPlugin, ZoneVisualizationPlugin,
+};
+use ui::{MoneyDisplayPlugin, SpeedControlPlugin, ToolbarPlugin, WorkAssignmentsPlugin};
 
 // Tile system constants
 // In RimWorld, a pawn occupies 1 tile. In our game, a pawn will occupy 2x2 tiles (4 tiles)
@@ -27,7 +30,9 @@ fn main() {
             ToolbarPlugin,
             SpeedControlPlugin,
             MoneyDisplayPlugin,
+            WorkAssignmentsPlugin,
             BuildingPlugin,
+            SaveLoadPlugin,
             PawnPlugin,
             WorkPlugin,
             AsciiRendererPlugin,
@@ -42,8 +47,5 @@ fn main() {
 
 fn setup(mut commands: Commands) {
     // Spawn camera with pan/zoom capability
-    commands.spawn((
-        Camera2d,
-        Transform::from_xyz(0.0, 0.0, 999.9),
-    ));
+    commands.spawn((Camera2d, Transform::from_xyz(0.0, 0.0, 999.9)));
 }

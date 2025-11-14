@@ -1,5 +1,6 @@
+use super::UiInputBlocker;
+use crate::systems::time_control::{SpeedOption, TimeSpeed};
 use bevy::prelude::*;
-use crate::systems::time_control::{TimeSpeed, SpeedOption};
 
 #[derive(Component)]
 pub struct SpeedControlPanel;
@@ -13,11 +14,16 @@ pub struct SpeedControlPlugin;
 
 impl Plugin for SpeedControlPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_speed_control)
-            .add_systems(Update, (
-                handle_speed_button_clicks,
-                update_speed_button_colors,
-            ));
+        app.init_resource::<UiInputBlocker>()
+            .add_systems(Startup, setup_speed_control)
+            .add_systems(
+                Update,
+                (
+                    handle_speed_button_clicks,
+                    update_speed_button_colors,
+                    block_map_input_over_speed_controls,
+                ),
+            );
     }
 }
 
@@ -105,4 +111,16 @@ fn update_speed_button_colors(
             }
         }
     }
+}
+
+fn block_map_input_over_speed_controls(
+    mut ui_blocker: ResMut<UiInputBlocker>,
+    interaction_query: Query<&Interaction, With<SpeedButton>>,
+) {
+    let should_block = interaction_query
+        .iter()
+        .any(|interaction| matches!(*interaction, Interaction::Hovered | Interaction::Pressed));
+
+    ui_blocker.speed_controls_blocking = should_block;
+    ui_blocker.recompute();
 }

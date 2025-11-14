@@ -1,7 +1,7 @@
-use bevy::prelude::*;
-use bevy::sprite::*;
 use crate::components::*;
 use crate::systems::grid::*;
+use bevy::prelude::*;
+use bevy::sprite::*;
 
 const PAWN_SIZE: f32 = TILE_SIZE * 2.0; // Pawns occupy 2x2 tiles
 
@@ -10,10 +10,7 @@ pub struct PawnPlugin;
 impl Plugin for PawnPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, spawn_initial_pawns)
-            .add_systems(Update, (
-                move_pawns,
-                update_pawn_positions,
-            ));
+            .add_systems(Update, (move_pawns, update_pawn_positions));
     }
 }
 
@@ -36,14 +33,12 @@ fn spawn_initial_pawns(
             },
             GridPosition::new(0, 0),
             CurrentJob::default(),
+            WorkAssignments::default(),
         ));
     }
 }
 
-fn move_pawns(
-    mut query: Query<(&mut Transform, &Pawn, &MovementTarget)>,
-    time: Res<Time>,
-) {
+fn move_pawns(mut query: Query<(&mut Transform, &Pawn, &MovementTarget)>, time: Res<Time>) {
     for (mut transform, pawn, target) in &mut query {
         let current_pos = transform.translation.truncate();
         let direction = target.target - current_pos;

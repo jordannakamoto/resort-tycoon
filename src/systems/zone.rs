@@ -1,15 +1,13 @@
-use bevy::prelude::*;
-use bevy::window::{PrimaryWindow, Window as BevyWindow};
 use crate::components::*;
 use crate::systems::grid::*;
+use bevy::prelude::*;
+use bevy::window::{PrimaryWindow, Window as BevyWindow};
 
 pub struct ZoneVisualizationPlugin;
 
 impl Plugin for ZoneVisualizationPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, (
-            update_room_hover_ui,
-        ));
+        app.add_systems(Update, (update_room_hover_ui,));
     }
 }
 
@@ -47,9 +45,7 @@ fn update_room_hover_ui(
                 for room in &room_query {
                     if room.contains_tile(grid_pos) {
                         // Find the zone for this room
-                        let zone = zone_query.iter().find(|z| {
-                            z.tiles.contains(&grid_pos)
-                        });
+                        let zone = zone_query.iter().find(|z| z.tiles.contains(&grid_pos));
 
                         // Create stats panel
                         spawn_room_stats_panel(&mut commands, room, zone, cursor_pos);
@@ -83,25 +79,26 @@ fn spawn_room_stats_panel(
     };
 
     // Spawn UI panel near cursor
-    commands.spawn((
-        Node {
-            position_type: PositionType::Absolute,
-            left: Val::Px(cursor_pos.x + 20.0),
-            top: Val::Px(cursor_pos.y + 20.0),
-            padding: UiRect::all(Val::Px(10.0)),
-            ..default()
-        },
-        BackgroundColor(Color::srgba(0.1, 0.1, 0.1, 0.9)),
-        RoomStatsPanel,
-    ))
-    .with_children(|parent| {
-        parent.spawn((
-            Text::new(panel_text),
-            TextFont {
-                font_size: 14.0,
+    commands
+        .spawn((
+            Node {
+                position_type: PositionType::Absolute,
+                left: Val::Px(cursor_pos.x + 20.0),
+                top: Val::Px(cursor_pos.y + 20.0),
+                padding: UiRect::all(Val::Px(10.0)),
                 ..default()
             },
-            TextColor(Color::WHITE),
-        ));
-    });
+            BackgroundColor(Color::srgba(0.1, 0.1, 0.1, 0.9)),
+            RoomStatsPanel,
+        ))
+        .with_children(|parent| {
+            parent.spawn((
+                Text::new(panel_text),
+                TextFont {
+                    font_size: 14.0,
+                    ..default()
+                },
+                TextColor(Color::WHITE),
+            ));
+        });
 }

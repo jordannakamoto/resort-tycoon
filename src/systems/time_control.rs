@@ -43,10 +43,7 @@ impl Plugin for TimeControlPlugin {
     }
 }
 
-fn apply_time_speed(
-    time_speed: Res<TimeSpeed>,
-    mut time: ResMut<Time<Virtual>>,
-) {
+fn apply_time_speed(time_speed: Res<TimeSpeed>, mut time: ResMut<Time<Virtual>>) {
     if time_speed.is_changed() {
         time.set_relative_speed(time_speed.multiplier);
     }

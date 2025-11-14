@@ -88,7 +88,12 @@ fn update_grid_visibility(
 }
 
 // Helper functions for grid coordinate conversion
-pub fn world_to_grid(world_pos: Vec2, tile_size: f32, grid_width: i32, grid_height: i32) -> Option<IVec2> {
+pub fn world_to_grid(
+    world_pos: Vec2,
+    tile_size: f32,
+    grid_width: i32,
+    grid_height: i32,
+) -> Option<IVec2> {
     let width = grid_width as f32 * tile_size;
     let height = grid_height as f32 * tile_size;
 

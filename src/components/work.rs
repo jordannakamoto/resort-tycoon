@@ -42,7 +42,7 @@ pub enum BlueprintType {
     Furniture(FurnitureType),
 }
 
-use crate::components::{FloorType, DoorOrientation, FurnitureType};
+use crate::components::{DoorOrientation, FloorType, FurnitureType};
 
 #[derive(Component)]
 pub struct ConstructionJob {
@@ -69,5 +69,47 @@ pub struct WorkInProgress {
 impl Default for WorkInProgress {
     fn default() -> Self {
         Self { work_speed: 10.0 }
+    }
+}
+
+#[derive(Component)]
+pub struct DeconstructionMarker {
+    pub target_entity: Entity,
+    pub work_required: f32,
+    pub work_done: f32,
+}
+
+impl DeconstructionMarker {
+    pub fn new(target_entity: Entity) -> Self {
+        Self {
+            target_entity,
+            work_required: 80.0, // Deconstruction is faster than construction
+            work_done: 0.0,
+        }
+    }
+
+    pub fn progress(&self) -> f32 {
+        self.work_done / self.work_required
+    }
+
+    pub fn is_complete(&self) -> bool {
+        self.work_done >= self.work_required
+    }
+}
+
+#[derive(Component)]
+pub struct DeconstructionJob {
+    pub marker: Entity,
+    pub assigned_pawn: Option<Entity>,
+    pub priority: i32,
+}
+
+impl DeconstructionJob {
+    pub fn new(marker: Entity) -> Self {
+        Self {
+            marker,
+            assigned_pawn: None,
+            priority: 5,
+        }
     }
 }
