@@ -1,0 +1,4028 @@
+{
+  "walls": [
+    {
+      "x": 35,
+      "y": 32
+    },
+    {
+      "x": 35,
+      "y": 33
+    },
+    {
+      "x": 35,
+      "y": 34
+    },
+    {
+      "x": 35,
+      "y": 35
+    },
+    {
+      "x": 35,
+      "y": 38
+    },
+    {
+      "x": 35,
+      "y": 39
+    },
+    {
+      "x": 35,
+      "y": 40
+    },
+    {
+      "x": 35,
+      "y": 41
+    },
+    {
+      "x": 35,
+      "y": 42
+    },
+    {
+      "x": 35,
+      "y": 43
+    },
+    {
+      "x": 35,
+      "y": 44
+    },
+    {
+      "x": 35,
+      "y": 45
+    },
+    {
+      "x": 35,
+      "y": 46
+    },
+    {
+      "x": 35,
+      "y": 47
+    },
+    {
+      "x": 35,
+      "y": 48
+    },
+    {
+      "x": 35,
+      "y": 49
+    },
+    {
+      "x": 36,
+      "y": 32
+    },
+    {
+      "x": 36,
+      "y": 42
+    },
+    {
+      "x": 36,
+      "y": 49
+    },
+    {
+      "x": 37,
+      "y": 32
+    },
+    {
+      "x": 37,
+      "y": 42
+    },
+    {
+      "x": 37,
+      "y": 49
+    },
+    {
+      "x": 38,
+      "y": 32
+    },
+    {
+      "x": 38,
+      "y": 42
+    },
+    {
+      "x": 38,
+      "y": 49
+    },
+    {
+      "x": 39,
+      "y": 32
+    },
+    {
+      "x": 39,
+      "y": 42
+    },
+    {
+      "x": 39,
+      "y": 49
+    },
+    {
+      "x": 40,
+      "y": 32
+    },
+    {
+      "x": 40,
+      "y": 42
+    },
+    {
+      "x": 40,
+      "y": 49
+    },
+    {
+      "x": 41,
+      "y": 32
+    },
+    {
+      "x": 41,
+      "y": 42
+    },
+    {
+      "x": 41,
+      "y": 49
+    },
+    {
+      "x": 42,
+      "y": 32
+    },
+    {
+      "x": 42,
+      "y": 42
+    },
+    {
+      "x": 42,
+      "y": 49
+    },
+    {
+      "x": 43,
+      "y": 32
+    },
+    {
+      "x": 43,
+      "y": 42
+    },
+    {
+      "x": 43,
+      "y": 49
+    },
+    {
+      "x": 44,
+      "y": 32
+    },
+    {
+      "x": 44,
+      "y": 40
+    },
+    {
+      "x": 44,
+      "y": 41
+    },
+    {
+      "x": 44,
+      "y": 42
+    },
+    {
+      "x": 44,
+      "y": 43
+    },
+    {
+      "x": 44,
+      "y": 44
+    },
+    {
+      "x": 44,
+      "y": 45
+    },
+    {
+      "x": 44,
+      "y": 46
+    },
+    {
+      "x": 44,
+      "y": 47
+    },
+    {
+      "x": 44,
+      "y": 48
+    },
+    {
+      "x": 44,
+      "y": 49
+    },
+    {
+      "x": 45,
+      "y": 32
+    },
+    {
+      "x": 45,
+      "y": 40
+    },
+    {
+      "x": 45,
+      "y": 49
+    },
+    {
+      "x": 46,
+      "y": 32
+    },
+    {
+      "x": 46,
+      "y": 40
+    },
+    {
+      "x": 46,
+      "y": 49
+    },
+    {
+      "x": 47,
+      "y": 32
+    },
+    {
+      "x": 47,
+      "y": 40
+    },
+    {
+      "x": 47,
+      "y": 49
+    },
+    {
+      "x": 48,
+      "y": 32
+    },
+    {
+      "x": 48,
+      "y": 40
+    },
+    {
+      "x": 48,
+      "y": 48
+    },
+    {
+      "x": 48,
+      "y": 49
+    },
+    {
+      "x": 48,
+      "y": 50
+    },
+    {
+      "x": 48,
+      "y": 51
+    },
+    {
+      "x": 48,
+      "y": 52
+    },
+    {
+      "x": 49,
+      "y": 32
+    },
+    {
+      "x": 49,
+      "y": 52
+    },
+    {
+      "x": 50,
+      "y": 32
+    },
+    {
+      "x": 50,
+      "y": 52
+    },
+    {
+      "x": 51,
+      "y": 32
+    },
+    {
+      "x": 51,
+      "y": 40
+    },
+    {
+      "x": 51,
+      "y": 48
+    },
+    {
+      "x": 51,
+      "y": 52
+    },
+    {
+      "x": 52,
+      "y": 32
+    },
+    {
+      "x": 52,
+      "y": 40
+    },
+    {
+      "x": 52,
+      "y": 48
+    },
+    {
+      "x": 52,
+      "y": 49
+    },
+    {
+      "x": 52,
+      "y": 50
+    },
+    {
+      "x": 52,
+      "y": 51
+    },
+    {
+      "x": 52,
+      "y": 52
+    },
+    {
+      "x": 53,
+      "y": 32
+    },
+    {
+      "x": 53,
+      "y": 40
+    },
+    {
+      "x": 53,
+      "y": 49
+    },
+    {
+      "x": 54,
+      "y": 32
+    },
+    {
+      "x": 54,
+      "y": 40
+    },
+    {
+      "x": 54,
+      "y": 49
+    },
+    {
+      "x": 55,
+      "y": 32
+    },
+    {
+      "x": 55,
+      "y": 40
+    },
+    {
+      "x": 55,
+      "y": 49
+    },
+    {
+      "x": 56,
+      "y": 32
+    },
+    {
+      "x": 56,
+      "y": 40
+    },
+    {
+      "x": 56,
+      "y": 49
+    },
+    {
+      "x": 57,
+      "y": 32
+    },
+    {
+      "x": 57,
+      "y": 40
+    },
+    {
+      "x": 57,
+      "y": 49
+    },
+    {
+      "x": 58,
+      "y": 32
+    },
+    {
+      "x": 58,
+      "y": 40
+    },
+    {
+      "x": 58,
+      "y": 49
+    },
+    {
+      "x": 59,
+      "y": 32
+    },
+    {
+      "x": 59,
+      "y": 40
+    },
+    {
+      "x": 59,
+      "y": 49
+    },
+    {
+      "x": 60,
+      "y": 32
+    },
+    {
+      "x": 60,
+      "y": 40
+    },
+    {
+      "x": 60,
+      "y": 49
+    },
+    {
+      "x": 61,
+      "y": 32
+    },
+    {
+      "x": 61,
+      "y": 40
+    },
+    {
+      "x": 61,
+      "y": 41
+    },
+    {
+      "x": 61,
+      "y": 42
+    },
+    {
+      "x": 61,
+      "y": 43
+    },
+    {
+      "x": 61,
+      "y": 44
+    },
+    {
+      "x": 61,
+      "y": 45
+    },
+    {
+      "x": 61,
+      "y": 46
+    },
+    {
+      "x": 61,
+      "y": 47
+    },
+    {
+      "x": 61,
+      "y": 48
+    },
+    {
+      "x": 61,
+      "y": 49
+    },
+    {
+      "x": 62,
+      "y": 32
+    },
+    {
+      "x": 62,
+      "y": 42
+    },
+    {
+      "x": 63,
+      "y": 32
+    },
+    {
+      "x": 63,
+      "y": 42
+    },
+    {
+      "x": 64,
+      "y": 32
+    },
+    {
+      "x": 64,
+      "y": 42
+    },
+    {
+      "x": 65,
+      "y": 32
+    },
+    {
+      "x": 65,
+      "y": 42
+    },
+    {
+      "x": 66,
+      "y": 32
+    },
+    {
+      "x": 66,
+      "y": 42
+    },
+    {
+      "x": 67,
+      "y": 32
+    },
+    {
+      "x": 67,
+      "y": 42
+    },
+    {
+      "x": 68,
+      "y": 32
+    },
+    {
+      "x": 68,
+      "y": 33
+    },
+    {
+      "x": 68,
+      "y": 42
+    },
+    {
+      "x": 69,
+      "y": 33
+    },
+    {
+      "x": 69,
+      "y": 34
+    },
+    {
+      "x": 69,
+      "y": 35
+    },
+    {
+      "x": 69,
+      "y": 36
+    },
+    {
+      "x": 69,
+      "y": 37
+    },
+    {
+      "x": 69,
+      "y": 38
+    },
+    {
+      "x": 69,
+      "y": 39
+    },
+    {
+      "x": 69,
+      "y": 40
+    },
+    {
+      "x": 69,
+      "y": 41
+    },
+    {
+      "x": 69,
+      "y": 42
+    }
+  ],
+  "floors": [
+    {
+      "position": {
+        "x": 36,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 36,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 36,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 36,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 36,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 36,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 36,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 36,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 36,
+        "y": 41
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 36,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 36,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 36,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 36,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 36,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 36,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 37,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 37,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 37,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 37,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 37,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 37,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 37,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 37,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 37,
+        "y": 41
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 37,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 37,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 37,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 37,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 37,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 37,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 38,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 38,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 38,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 38,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 38,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 38,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 38,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 38,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 38,
+        "y": 41
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 38,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 38,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 38,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 38,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 38,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 38,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 39,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 39,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 39,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 39,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 39,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 39,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 39,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 39,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 39,
+        "y": 41
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 39,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 39,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 39,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 39,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 39,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 39,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 40,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 40,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 40,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 40,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 40,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 40,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 40,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 40,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 40,
+        "y": 41
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 40,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 40,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 40,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 40,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 40,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 40,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 41,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 41,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 41,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 41,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 41,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 41,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 41,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 41,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 41,
+        "y": 41
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 41,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 41,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 41,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 41,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 41,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 41,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 42,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 42,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 42,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 42,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 42,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 42,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 42,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 42,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 42,
+        "y": 41
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 42,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 42,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 42,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 42,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 42,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 42,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 43,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 43,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 43,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 43,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 43,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 43,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 43,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 43,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 43,
+        "y": 41
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 43,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 43,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 43,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 43,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 43,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 43,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 44,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 44,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 44,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 44,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 44,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 44,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 44,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 46,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 46,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 46,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 46,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 46,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 46,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 46,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 46,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 46,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 46,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 46,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 46,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 46,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 46,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 46,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 47,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 47,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 47,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 47,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 47,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 47,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 47,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 47,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 47,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 47,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 47,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 47,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 47,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 47,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 47,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 48,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 48,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 48,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 48,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 48,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 48,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 48,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 48,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 48,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 48,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 48,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 48,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 48,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 48,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 49
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 50
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 51
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 49
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 50,
+        "y": 51
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 49
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 50
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 51,
+        "y": 51
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 52,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 52,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 52,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 52,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 52,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 52,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 52,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 52,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 52,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 52,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 52,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 52,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 52,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 52,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 53,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 53,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 53,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 53,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 53,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 53,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 53,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 53,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 53,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 53,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 53,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 53,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 53,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 53,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 53,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 54,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 54,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 54,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 54,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 54,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 54,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 54,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 54,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 54,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 54,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 54,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 54,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 54,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 54,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 54,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 55,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 55,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 55,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 55,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 55,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 55,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 55,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 55,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 55,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 55,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 55,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 55,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 55,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 55,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 55,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 58,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 58,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 58,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 58,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 58,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 58,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 58,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 58,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 58,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 58,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 58,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 58,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 58,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 58,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 58,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 59,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 59,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 59,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 59,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 59,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 59,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 59,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 59,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 59,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 59,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 59,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 59,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 59,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 59,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 59,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 60,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 60,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 60,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 60,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 60,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 60,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 60,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 60,
+        "y": 41
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 60,
+        "y": 42
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 60,
+        "y": 43
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 60,
+        "y": 44
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 60,
+        "y": 45
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 60,
+        "y": 46
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 60,
+        "y": 47
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 60,
+        "y": 48
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 61,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 61,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 61,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 61,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 61,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 61,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 61,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 62,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 62,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 62,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 62,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 62,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 62,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 62,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 62,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 62,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 62,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 62,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 62,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 62,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 62,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 62,
+        "y": 41
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 63,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 63,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 63,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 63,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 63,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 63,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 63,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 63,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 63,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 63,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 63,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 63,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 63,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 63,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 63,
+        "y": 41
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 64,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 64,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 64,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 64,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 64,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 64,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 64,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 64,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 64,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 64,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 64,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 64,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 64,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 64,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 64,
+        "y": 41
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 65,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 65,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 65,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 65,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 65,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 65,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 65,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 65,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 65,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 65,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 65,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 65,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 65,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 65,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 65,
+        "y": 41
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 66,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 66,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 66,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 66,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 66,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 66,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 66,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 66,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 66,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 66,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 66,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 66,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 66,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 66,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 66,
+        "y": 41
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 67,
+        "y": 33
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 67,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 67,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 67,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 67,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 67,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 67,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 67,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 67,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 67,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 67,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 67,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 67,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 67,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 67,
+        "y": 41
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 68,
+        "y": 34
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 68,
+        "y": 35
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 68,
+        "y": 36
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 68,
+        "y": 37
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 68,
+        "y": 38
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 68,
+        "y": 39
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 68,
+        "y": 40
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 68,
+        "y": 41
+      },
+      "floor_type": "Carpet"
+    },
+    {
+      "position": {
+        "x": 78,
+        "y": 61
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 78,
+        "y": 62
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 79,
+        "y": 61
+      },
+      "floor_type": "Wood"
+    },
+    {
+      "position": {
+        "x": 84,
+        "y": 50
+      },
+      "floor_type": "Wood"
+    }
+  ],
+  "doors": [
+    {
+      "position": {
+        "x": 35,
+        "y": 36
+      },
+      "orientation": "Vertical"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 40
+      },
+      "orientation": "Horizontal"
+    },
+    {
+      "position": {
+        "x": 49,
+        "y": 48
+      },
+      "orientation": "Horizontal"
+    }
+  ],
+  "furniture": [
+    {
+      "position": {
+        "x": 45,
+        "y": 41
+      },
+      "furniture_type": "Dresser",
+      "orientation": "North"
+    },
+    {
+      "position": {
+        "x": 45,
+        "y": 47
+      },
+      "furniture_type": "Dresser",
+      "orientation": "South"
+    },
+    {
+      "position": {
+        "x": 56,
+        "y": 46
+      },
+      "furniture_type": "Nightstand",
+      "orientation": "East"
+    },
+    {
+      "position": {
+        "x": 57,
+        "y": 43
+      },
+      "furniture_type": {
+        "Bed": "Double"
+      },
+      "orientation": "East"
+    }
+  ]
+}

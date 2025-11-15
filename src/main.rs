@@ -34,6 +34,8 @@ fn main() {
             WorkAssignmentsPlugin,
             SaveLoadPanelPlugin,
             BuildingPlugin,
+        ))
+        .add_plugins((
             SaveLoadPlugin,
             PawnPlugin,
             WorkPlugin,
