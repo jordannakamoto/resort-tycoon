@@ -1,5 +1,6 @@
 pub mod ascii_renderer;
 pub mod building;
+pub mod camera;
 pub mod economy;
 pub mod grid;
 pub mod pawn;
@@ -11,6 +12,7 @@ pub mod zone;
 
 pub use ascii_renderer::*;
 pub use building::*;
+pub use camera::*;
 pub use economy::*;
 pub use grid::*;
 pub use pawn::*;

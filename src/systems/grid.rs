@@ -2,8 +2,8 @@ use bevy::prelude::*;
 use bevy::sprite::*;
 
 pub const TILE_SIZE: f32 = 16.0;
-pub const GRID_WIDTH: i32 = 100;
-pub const GRID_HEIGHT: i32 = 100;
+pub const GRID_WIDTH: i32 = 200;
+pub const GRID_HEIGHT: i32 = 200;
 
 #[derive(Resource)]
 pub struct GridSettings {

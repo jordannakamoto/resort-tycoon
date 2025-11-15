@@ -5,7 +5,7 @@ mod systems;
 mod ui;
 
 use systems::{
-    AsciiRendererPlugin, BuildingPlugin, EconomyPlugin, GridPlugin, PawnPlugin,
+    AsciiRendererPlugin, BuildingPlugin, CameraPlugin, EconomyPlugin, GridPlugin, PawnPlugin,
     RoomDetectionPlugin, SaveLoadPlugin, TimeControlPlugin, WorkPlugin, ZoneVisualizationPlugin,
 };
 use ui::{MoneyDisplayPlugin, SaveLoadPanelPlugin, SpeedControlPlugin, ToolbarPlugin, WorkAssignmentsPlugin};
@@ -27,6 +27,7 @@ fn main() {
         }))
         .add_plugins((
             GridPlugin,
+            CameraPlugin,
             ToolbarPlugin,
             SpeedControlPlugin,
             MoneyDisplayPlugin,
@@ -48,5 +49,10 @@ fn main() {
 
 fn setup(mut commands: Commands) {
     // Spawn camera with pan/zoom capability
-    commands.spawn((Camera2d, Transform::from_xyz(0.0, 0.0, 999.9)));
+    use systems::CameraController;
+    commands.spawn((
+        Camera2d,
+        Transform::from_xyz(0.0, 0.0, 999.9),
+        CameraController::default(),
+    ));
 }
