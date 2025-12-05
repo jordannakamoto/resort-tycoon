@@ -1,7 +1,7 @@
-use bevy::prelude::*;
-use crate::components::furniture::*;
 use crate::components::building::GridPosition;
+use crate::components::furniture::*;
 use crate::systems::building::BuildingMap;
+use bevy::prelude::*;
 
 /// Validates if furniture can be placed at the given position
 pub fn validate_furniture_placement(

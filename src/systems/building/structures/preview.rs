@@ -1,7 +1,7 @@
-use bevy::prelude::*;
-use crate::components::*;
-use crate::systems::grid::{GridSettings, grid_to_world};
 use super::super::BuildingMap;
+use crate::components::*;
+use crate::systems::grid::{grid_to_world, GridSettings};
+use bevy::prelude::*;
 
 /// Shows preview for door placement (2x1 tiles)
 pub fn show_door_preview(
@@ -30,12 +30,12 @@ pub fn show_door_preview(
             grid_settings.height,
         );
 
-        let is_blocked = building_map.occupied.contains(&tile_pos)
-            || building_map.doors.contains_key(&tile_pos);
+        let is_blocked =
+            building_map.occupied.contains(&tile_pos) || building_map.doors.contains_key(&tile_pos);
         let color = if is_blocked {
-            Color::srgba(1.0, 0.3, 0.3, 0.5)  // Red for blocked
+            Color::srgba(1.0, 0.3, 0.3, 0.5) // Red for blocked
         } else {
-            Color::srgba(1.0, 1.0, 1.0, 0.5)  // White for valid
+            Color::srgba(1.0, 1.0, 1.0, 0.5) // White for valid
         };
 
         commands.spawn((
@@ -68,9 +68,9 @@ pub fn show_single_tile_preview(
 
     let is_occupied = building_map.occupied.contains(&grid_pos);
     let color = if is_occupied {
-        Color::srgba(1.0, 0.3, 0.3, 0.5)  // Red for blocked
+        Color::srgba(1.0, 0.3, 0.3, 0.5) // Red for blocked
     } else {
-        Color::srgba(1.0, 1.0, 1.0, 0.5)  // White for valid
+        Color::srgba(1.0, 1.0, 1.0, 0.5) // White for valid
     };
 
     commands.spawn((
@@ -110,9 +110,9 @@ pub fn show_drag_area_preview(
         };
 
         let color = if is_blocked {
-            Color::srgba(1.0, 0.3, 0.3, 0.5)  // Red for blocked
+            Color::srgba(1.0, 0.3, 0.3, 0.5) // Red for blocked
         } else {
-            Color::srgba(1.0, 1.0, 1.0, 0.5)  // White for valid
+            Color::srgba(1.0, 1.0, 1.0, 0.5) // White for valid
         };
 
         commands.spawn((

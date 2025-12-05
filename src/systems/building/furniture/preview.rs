@@ -1,9 +1,9 @@
-use bevy::prelude::*;
+use super::super::factories::*;
+use super::super::BuildingMap;
 use crate::components::furniture::*;
 use crate::components::*;
-use crate::systems::grid::{GridSettings, grid_to_world};
-use super::super::BuildingMap;
-use super::super::factories::*;
+use crate::systems::grid::{grid_to_world, GridSettings};
+use bevy::prelude::*;
 
 /// Shows preview for reception console (special case - must be on desk)
 pub fn show_reception_console_preview(
@@ -25,9 +25,9 @@ pub fn show_reception_console_preview(
     );
 
     let preview_color = if !is_valid {
-        Color::srgba(1.0, 0.3, 0.3, 1.0)  // Red if no desk
+        Color::srgba(1.0, 0.3, 0.3, 1.0) // Red if no desk
     } else {
-        Color::srgba(1.0, 1.0, 1.0, 0.7)  // White if desk present, preserves sprite alpha
+        Color::srgba(1.0, 1.0, 1.0, 0.7) // White if desk present, preserves sprite alpha
     };
 
     let world_pos = grid_to_world(
@@ -73,13 +73,8 @@ pub fn show_regular_furniture_preview(
     asset_server: &AssetServer,
 ) {
     // Validate placement
-    let is_blocked = !validate_furniture_placement(
-        furniture_type,
-        grid_pos,
-        orientation,
-        building_map,
-        None,
-    );
+    let is_blocked =
+        !validate_furniture_placement(furniture_type, grid_pos, orientation, building_map, None);
 
     // Calculate center position for preview
     let (width_tiles, height_tiles) = furniture_type.oriented_dimensions(orientation);
@@ -107,40 +102,35 @@ pub fn show_regular_furniture_preview(
 
     // Apply color tint based on placement validity
     let preview_color = if is_blocked {
-        Color::srgba(1.0, 0.3, 0.3, 1.0)  // Red for blocked
+        Color::srgba(1.0, 0.3, 0.3, 1.0) // Red for blocked
     } else {
-        Color::srgba(1.0, 1.0, 1.0, 0.7)  // White for valid, preserves sprite alpha
+        Color::srgba(1.0, 1.0, 1.0, 0.7) // White for valid, preserves sprite alpha
     };
 
     // Spawn preview based on sprite config
     match sprite_config {
-        FurnitureSpriteConfig::Rotating { mut sprite, rotation_radians } => {
+        FurnitureSpriteConfig::Rotating {
+            mut sprite,
+            rotation_radians,
+        } => {
             sprite.color = preview_color;
             let mut transform = Transform::from_xyz(preview_pos.x, preview_pos.y, 4.0);
             transform.rotate_z(rotation_radians);
 
-            commands.spawn((
-                sprite,
-                transform,
-                PlacementPreview,
-            ));
+            commands.spawn((sprite, transform, PlacementPreview));
         }
         FurnitureSpriteConfig::Directional { mut sprite } => {
             sprite.color = preview_color;
             let transform = Transform::from_xyz(preview_pos.x, preview_pos.y, 4.0);
 
-            commands.spawn((
-                sprite,
-                transform,
-                PlacementPreview,
-            ));
+            commands.spawn((sprite, transform, PlacementPreview));
         }
         FurnitureSpriteConfig::Mesh { color: _ } => {
             // For mesh-based furniture, use semi-transparent color
             let mesh_color = if is_blocked {
-                Color::srgba(1.0, 0.3, 0.3, 0.5)  // Red for blocked
+                Color::srgba(1.0, 0.3, 0.3, 0.5) // Red for blocked
             } else {
-                Color::srgba(1.0, 1.0, 1.0, 0.5)  // White for valid
+                Color::srgba(1.0, 1.0, 1.0, 0.5) // White for valid
             };
 
             let (base_width_tiles, base_height_tiles) = furniture_type.base_dimensions();

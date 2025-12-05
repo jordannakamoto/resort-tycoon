@@ -102,8 +102,8 @@ fn render_wall_projections(
     const SIDE_SHADE_HEIGHT: f32 = TILE_SIZE;
     const HALF_TILE: f32 = TILE_SIZE / 2.0;
     // RimWorld-style consistent shadow colors - fully opaque to prevent stacking/blending
-    const NORTH_SHADE_COLOR: Color = Color::srgb(0.1, 0.08, 0.06);  // Top shadow
-    const SIDE_SHADE_COLOR: Color = Color::srgb(0.12, 0.10, 0.08);  // Consistent side shadows
+    const NORTH_SHADE_COLOR: Color = Color::srgb(0.1, 0.08, 0.06); // Top shadow
+    const SIDE_SHADE_COLOR: Color = Color::srgb(0.12, 0.10, 0.08); // Consistent side shadows
     const FORCE_ALL_PROJECTIONS: bool = false;
 
     let mut rebuild = |entity: Entity,
@@ -145,11 +145,7 @@ fn render_wall_projections(
                 parent.spawn((
                     Mesh2d(meshes.add(Rectangle::new(SIDE_SHADE_WIDTH, SIDE_SHADE_HEIGHT))),
                     MeshMaterial2d(materials.add(SIDE_SHADE_COLOR)),
-                    Transform::from_xyz(
-                        HALF_TILE - SIDE_SHADE_WIDTH / 2.0,
-                        0.0,
-                        0.1,
-                    ),
+                    Transform::from_xyz(HALF_TILE - SIDE_SHADE_WIDTH / 2.0, 0.0, 0.1),
                     WallProjectionVisual,
                 ));
             }
@@ -158,11 +154,7 @@ fn render_wall_projections(
                 parent.spawn((
                     Mesh2d(meshes.add(Rectangle::new(SIDE_SHADE_WIDTH, SIDE_SHADE_HEIGHT))),
                     MeshMaterial2d(materials.add(SIDE_SHADE_COLOR)),
-                    Transform::from_xyz(
-                        -HALF_TILE + SIDE_SHADE_WIDTH / 2.0,
-                        0.0,
-                        0.1,
-                    ),
+                    Transform::from_xyz(-HALF_TILE + SIDE_SHADE_WIDTH / 2.0, 0.0, 0.1),
                     WallProjectionVisual,
                 ));
             }

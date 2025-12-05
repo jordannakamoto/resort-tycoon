@@ -8,12 +8,13 @@ pub struct RoomDetectionPlugin;
 
 impl Plugin for RoomDetectionPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
+        app.init_resource::<RoomDirectory>().add_systems(
             Update,
             (
                 detect_rooms,
                 auto_assign_bedroom_zones,
                 auto_assign_lobby_zones,
+                refresh_room_directory,
             )
                 .chain(),
         );
@@ -29,8 +30,8 @@ fn detect_rooms(
     wall_query: Query<&GridPosition, (With<Wall>, Changed<GridPosition>)>,
     existing_rooms: Query<Entity, With<Room>>,
 ) {
-    // Only run detection if walls have changed
-    if wall_query.is_empty() {
+    // Run when walls change, or if we currently have no rooms (e.g., freshly loaded save)
+    if wall_query.is_empty() && !existing_rooms.is_empty() {
         return;
     }
 
@@ -82,6 +83,73 @@ fn find_enclosed_rooms(
     }
 
     rooms
+}
+
+/// Cached summary of rooms for UI and other systems.
+#[derive(Resource, Default, Debug)]
+pub struct RoomDirectory {
+    pub rooms: Vec<RoomSummary>,
+}
+
+#[derive(Debug, Clone)]
+pub struct RoomSummary {
+    pub entity: Entity,
+    pub name: String,
+    pub zone_type: Option<ZoneType>,
+    pub quality: ZoneQuality,
+    pub tile_count: usize,
+    pub bed_count: usize,
+    pub furniture_count: usize,
+}
+
+fn refresh_room_directory(
+    mut directory: ResMut<RoomDirectory>,
+    room_query: Query<(Entity, &Room)>,
+    zone_query: Query<&Zone>,
+    bed_query: Query<&GridPosition, With<Bed>>,
+    furniture_query: Query<&GridPosition, With<Furniture>>,
+) {
+    let mut summaries = Vec::new();
+
+    for (room_entity, room) in &room_query {
+        let zone = zone_query
+            .iter()
+            .find(|zone| zone.tiles.iter().any(|tile| room.contains_tile(*tile)));
+
+        let bed_count = bed_query
+            .iter()
+            .filter(|pos| room.contains_tile(pos.to_ivec2()))
+            .count();
+
+        let furniture_count = furniture_query
+            .iter()
+            .filter(|pos| room.contains_tile(pos.to_ivec2()))
+            .count();
+
+        let (zone_type, quality) = zone
+            .map(|z| (Some(z.zone_type), z.quality))
+            .unwrap_or((None, ZoneQuality::None));
+
+        summaries.push(RoomSummary {
+            entity: room_entity,
+            name: format!("Room {}", room_entity.index()),
+            zone_type,
+            quality,
+            tile_count: room.tile_count(),
+            bed_count,
+            furniture_count,
+        });
+    }
+
+    // Only trigger change detection when content differs
+    if summaries.len() != directory.rooms.len()
+        || summaries
+            .iter()
+            .zip(&directory.rooms)
+            .any(|(a, b)| a.entity != b.entity || a.zone_type != b.zone_type || a.quality != b.quality || a.tile_count != b.tile_count || a.bed_count != b.bed_count || a.furniture_count != b.furniture_count)
+    {
+        directory.rooms = summaries;
+    }
 }
 
 /// Flood fill from a position to find all connected open tiles

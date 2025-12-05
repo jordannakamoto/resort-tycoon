@@ -97,6 +97,19 @@ impl ReceptionConsole {
     }
 }
 
+/// Bed occupancy marker so guests can reserve/claim beds.
+#[derive(Component, Default, Clone)]
+pub struct BedClaim {
+    pub claimed_by: Option<Entity>,
+}
+
+/// Bathroom fixture usage marker to avoid overlapping use.
+#[derive(Component, Default, Clone)]
+pub struct FixtureInUse {
+    pub used_by: Option<Entity>,
+    pub timer: f32,
+}
+
 #[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum FurnitureType {
     Bed(BedType),

@@ -1,3 +1,6 @@
+use super::factories::*;
+use super::furniture;
+use super::structures;
 use crate::components::*;
 use crate::systems::grid::*;
 use crate::systems::Money;
@@ -5,9 +8,6 @@ use crate::ui::{BuildingType, OrderType, ToolbarState, UiInputBlocker};
 use bevy::prelude::*;
 use bevy::window::{PrimaryWindow, Window as BevyWindow};
 use std::collections::HashSet;
-use super::factories::*;
-use super::structures;
-use super::furniture;
 
 #[derive(Resource)]
 pub struct BuildingMap {
@@ -92,24 +92,56 @@ impl DragState {
         }
     }
 
-    pub fn get_drag_positions(&self) -> Vec<IVec2> {
+    pub fn get_drag_positions(&self, outline_only: bool) -> Vec<IVec2> {
         if let (Some(start), Some(end)) = (self.start_pos, self.current_pos) {
-            let min_x = start.x.min(end.x);
-            let max_x = start.x.max(end.x);
-            let min_y = start.y.min(end.y);
-            let max_y = start.y.max(end.y);
-
-            let mut positions = Vec::new();
-            for x in min_x..=max_x {
-                for y in min_y..=max_y {
-                    positions.push(IVec2::new(x, y));
-                }
-            }
-            positions
+            rectangle_positions(start, end, outline_only)
         } else {
             Vec::new()
         }
     }
+}
+
+fn rectangle_positions(start: IVec2, end: IVec2, outline_only: bool) -> Vec<IVec2> {
+    let min_x = start.x.min(end.x);
+    let max_x = start.x.max(end.x);
+    let min_y = start.y.min(end.y);
+    let max_y = start.y.max(end.y);
+
+    if !outline_only {
+        let mut positions = Vec::new();
+        for x in min_x..=max_x {
+            for y in min_y..=max_y {
+                positions.push(IVec2::new(x, y));
+            }
+        }
+        return positions;
+    }
+
+    let mut positions = Vec::new();
+
+    // Top edge
+    for x in min_x..=max_x {
+        positions.push(IVec2::new(x, min_y));
+    }
+
+    // Bottom edge (skip if height is zero)
+    if max_y != min_y {
+        for x in min_x..=max_x {
+            positions.push(IVec2::new(x, max_y));
+        }
+    }
+
+    // Vertical edges between top and bottom (skip corners to avoid duplicates)
+    if max_y > min_y {
+        for y in (min_y + 1)..max_y {
+            positions.push(IVec2::new(min_x, y));
+            if max_x != min_x {
+                positions.push(IVec2::new(max_x, y));
+            }
+        }
+    }
+
+    positions
 }
 
 pub struct BuildingPlugin;
@@ -261,8 +293,8 @@ fn update_placement_preview(
                 && drag_state.is_dragging;
 
         if is_dragging_multi {
-            let positions = drag_state.get_drag_positions();
             let is_floor = matches!(building_type, BuildingType::Floor(_));
+            let positions = drag_state.get_drag_positions(matches!(building_type, BuildingType::Wall));
 
             structures::show_drag_area_preview(
                 &mut commands,
@@ -382,20 +414,7 @@ fn handle_building_placement(
         if is_drag_buildable && mouse_button.just_released(MouseButton::Left) {
             if let Some((start, end)) = drag_state.end() {
                 // Place all buildings in the drag area
-                let positions = {
-                    let min_x = start.x.min(end.x);
-                    let max_x = start.x.max(end.x);
-                    let min_y = start.y.min(end.y);
-                    let max_y = start.y.max(end.y);
-
-                    let mut positions = Vec::new();
-                    for x in min_x..=max_x {
-                        for y in min_y..=max_y {
-                            positions.push(IVec2::new(x, y));
-                        }
-                    }
-                    positions
-                };
+                let positions = rectangle_positions(start, end, matches!(building_type, BuildingType::Wall));
 
                 for grid_pos in positions {
                     // For structures, skip if occupied; for floors, skip if structure exists
@@ -715,7 +734,6 @@ fn handle_building_placement(
         }
     }
 }
-
 
 // Handle left-click deconstruction placement with Deconstruct order selected
 fn handle_deconstruction_placement(

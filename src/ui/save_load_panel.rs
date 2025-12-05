@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use bevy::ecs::system::SystemParam;
+use bevy::prelude::*;
 use std::fs;
 use std::path::Path;
 
@@ -169,28 +169,30 @@ fn setup_save_load_panel(mut commands: Commands, mut state: ResMut<SaveLoadPanel
                     ));
 
                     // Input field (we'll display the name here)
-                    parent.spawn((
-                        Node {
-                            width: Val::Px(200.0),
-                            height: Val::Px(30.0),
-                            padding: UiRect::all(Val::Px(5.0)),
-                            justify_content: JustifyContent::Start,
-                            align_items: AlignItems::Center,
-                            ..default()
-                        },
-                        BackgroundColor(Color::srgb(0.2, 0.2, 0.2)),
-                        SaveNameInput,
-                    )).with_children(|parent| {
-                        parent.spawn((
-                            Text::new("my_resort"),
-                            TextFont {
-                                font_size: 14.0,
+                    parent
+                        .spawn((
+                            Node {
+                                width: Val::Px(200.0),
+                                height: Val::Px(30.0),
+                                padding: UiRect::all(Val::Px(5.0)),
+                                justify_content: JustifyContent::Start,
+                                align_items: AlignItems::Center,
                                 ..default()
                             },
-                            TextColor(Color::WHITE),
-                            SaveNameText,
-                        ));
-                    });
+                            BackgroundColor(Color::srgb(0.2, 0.2, 0.2)),
+                            SaveNameInput,
+                        ))
+                        .with_children(|parent| {
+                            parent.spawn((
+                                Text::new("my_resort"),
+                                TextFont {
+                                    font_size: 14.0,
+                                    ..default()
+                                },
+                                TextColor(Color::WHITE),
+                                SaveNameText,
+                            ));
+                        });
                 });
 
             // Save button
@@ -274,7 +276,8 @@ fn update_save_list(
     mut last_saves_list: Local<Option<Vec<String>>>,
 ) {
     // Only rebuild if saves list actually changed (different files, not just refreshed)
-    let saves_changed = last_saves_list.as_ref()
+    let saves_changed = last_saves_list
+        .as_ref()
         .map_or(true, |last| last != &state.saves_list);
 
     if !saves_changed {
@@ -291,10 +294,16 @@ fn update_save_list(
     commands.entity(container).despawn_descendants();
 
     commands.entity(container).with_children(|parent| {
-        info!("Rebuilding save list UI with {} entries", state.saves_list.len());
+        info!(
+            "Rebuilding save list UI with {} entries",
+            state.saves_list.len()
+        );
         for save_name in &state.saves_list {
             let display_name = save_name.trim_end_matches(".json");
-            info!("Creating UI entry for: '{}' (display: '{}')", save_name, display_name);
+            info!(
+                "Creating UI entry for: '{}' (display: '{}')",
+                save_name, display_name
+            );
             // Container for each save item
             parent
                 .spawn(Node {
@@ -392,13 +401,21 @@ fn update_save_list(
 }
 
 fn handle_save_button(
-    mut interaction_query: Query<(&Interaction, &mut BackgroundColor), (Changed<Interaction>, With<SaveButton>)>,
+    mut interaction_query: Query<
+        (&Interaction, &mut BackgroundColor),
+        (Changed<Interaction>, With<SaveButton>),
+    >,
     state: Res<SaveLoadPanelState>,
     mut config: ResMut<SaveLoadConfig>,
     wall_query: Query<&GridPosition, With<Wall>>,
     floor_query: Query<(&GridPosition, &Floor)>,
     door_query: Query<(&GridPosition, &Door)>,
-    furniture_query: Query<(&GridPosition, &Furniture, &FurnitureType, &FurnitureOrientation)>,
+    furniture_query: Query<(
+        &GridPosition,
+        &Furniture,
+        &FurnitureType,
+        &FurnitureOrientation,
+    )>,
 ) {
     for (interaction, mut color) in &mut interaction_query {
         match *interaction {
@@ -415,8 +432,11 @@ fn handle_save_button(
                 let path = format!("assets/saves/{}", filename);
 
                 // Use the existing save logic
-                use crate::systems::save_load::{collect_save_data, write_save_file, sort_save_data};
-                let mut data = collect_save_data(&wall_query, &floor_query, &door_query, &furniture_query);
+                use crate::systems::save_load::{
+                    collect_save_data, sort_save_data, write_save_file,
+                };
+                let mut data =
+                    collect_save_data(&wall_query, &floor_query, &door_query, &furniture_query);
                 sort_save_data(&mut data);
 
                 if let Err(err) = write_save_file(&path, &data) {
@@ -460,7 +480,9 @@ fn handle_load_button(
                 let path = format!("assets/saves/{}", load_btn.filename);
                 config.path = path.clone();
 
-                use crate::systems::save_load::{read_or_create_save_file, clear_structures, apply_save_data};
+                use crate::systems::save_load::{
+                    apply_save_data, clear_structures, read_or_create_save_file,
+                };
 
                 let (data, source) = read_or_create_save_file(&path);
                 clear_structures(
@@ -502,10 +524,7 @@ fn handle_load_button(
     }
 }
 
-fn handle_keyboard_input(
-    keys: Res<ButtonInput<KeyCode>>,
-    mut state: ResMut<SaveLoadPanelState>,
-) {
+fn handle_keyboard_input(keys: Res<ButtonInput<KeyCode>>, mut state: ResMut<SaveLoadPanelState>) {
     if !state.visible {
         return;
     }
@@ -735,7 +754,10 @@ fn handle_rename_button(
                 *color = BackgroundColor(Color::srgb(0.3, 0.3, 0.15));
 
                 // Set the current name to the old name (without .json)
-                state.current_save_name = rename_btn.old_filename.trim_end_matches(".json").to_string();
+                state.current_save_name = rename_btn
+                    .old_filename
+                    .trim_end_matches(".json")
+                    .to_string();
                 info!("Set save name to {} for renaming", state.current_save_name);
             }
             Interaction::Hovered => {

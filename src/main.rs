@@ -5,10 +5,14 @@ mod systems;
 mod ui;
 
 use systems::{
-    AsciiRendererPlugin, BuildingPlugin, CameraPlugin, EconomyPlugin, GridPlugin, PawnPlugin,
-    RoomDetectionPlugin, SaveLoadPlugin, TimeControlPlugin, WorkPlugin, ZoneVisualizationPlugin,
+    AsciiRendererPlugin, BuildingPlugin, CameraPlugin, EconomyPlugin, GuestPlugin, GridPlugin,
+    MoodPlugin, MusicPlugin, PawnPlugin, ResortPlugin, RoomDetectionPlugin, SaveLoadPlugin,
+    TimeControlPlugin, TimeSimulationPlugin, WorkPlugin, ZoneVisualizationPlugin,
 };
-use ui::{MoneyDisplayPlugin, SaveLoadPanelPlugin, SpeedControlPlugin, ToolbarPlugin, WorkAssignmentsPlugin};
+use ui::{
+    MoneyDisplayPlugin, PawnInspectorPlugin, ReservationsUiPlugin, RoomManagerUiPlugin,
+    SaveLoadPanelPlugin, SpeedControlPlugin, ToolbarPlugin, WorkAssignmentsPlugin,
+};
 
 // Tile system constants
 // In RimWorld, a pawn occupies 1 tile. In our game, a pawn will occupy 2x2 tiles (4 tiles)
@@ -21,6 +25,7 @@ fn main() {
             primary_window: Some(Window {
                 title: "Resort Tycoon".to_string(),
                 resolution: (1280.0, 720.0).into(),
+                recognize_pinch_gesture: true,
                 ..default()
             }),
             ..default()
@@ -32,8 +37,18 @@ fn main() {
             SpeedControlPlugin,
             MoneyDisplayPlugin,
             WorkAssignmentsPlugin,
+            PawnInspectorPlugin,
+            ReservationsUiPlugin,
+            RoomManagerUiPlugin,
             SaveLoadPanelPlugin,
+        ))
+        .add_plugins((
             BuildingPlugin,
+            MoodPlugin,
+            ResortPlugin,
+            GuestPlugin,
+            TimeSimulationPlugin,
+            MusicPlugin,
         ))
         .add_plugins((
             SaveLoadPlugin,

@@ -1,9 +1,9 @@
-use bevy::prelude::*;
+use super::super::factories::*;
 use crate::components::furniture::*;
 use crate::components::*;
-use crate::systems::grid::GridSettings;
 use crate::systems::building::BuildingMap;
-use super::super::factories::*;
+use crate::systems::grid::GridSettings;
+use bevy::prelude::*;
 
 /// Places a reception console on a desk
 pub fn place_reception_console(
@@ -34,15 +34,22 @@ pub fn place_reception_console(
         _ => panic!("Reception console should use directional sprite"),
     };
 
-    let furniture_entity = commands.spawn((
-        sprite,
-        Transform::from_xyz(base_world_pos.x, base_world_pos.y, 3.5),
-        GridPosition::new(grid_pos.x, grid_pos.y),
-        Furniture,
-    )).id();
+    let furniture_entity = commands
+        .spawn((
+            sprite,
+            Transform::from_xyz(base_world_pos.x, base_world_pos.y, 3.5),
+            GridPosition::new(grid_pos.x, grid_pos.y),
+            Furniture,
+        ))
+        .id();
 
     // Insert components using factory function
-    insert_furniture_component(furniture_entity, FurnitureType::ReceptionConsole, orientation, commands);
+    insert_furniture_component(
+        furniture_entity,
+        FurnitureType::ReceptionConsole,
+        orientation,
+        commands,
+    );
 
     furniture_entity
 }
@@ -87,7 +94,10 @@ pub fn place_regular_furniture(
 
     // Spawn furniture entity based on sprite config
     let furniture_entity = match sprite_config {
-        FurnitureSpriteConfig::Rotating { sprite, rotation_radians } => {
+        FurnitureSpriteConfig::Rotating {
+            sprite,
+            rotation_radians,
+        } => {
             let mut transform = Transform::from_xyz(furniture_pos.x, furniture_pos.y, 3.0);
             transform.rotate_z(rotation_radians);
 

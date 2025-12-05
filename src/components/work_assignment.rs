@@ -70,7 +70,7 @@ impl WorkPriority {
 }
 
 /// Component storing a pawn's work priorities
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct WorkAssignments {
     priorities: std::collections::HashMap<WorkType, WorkPriority>,
 }

@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::components::*;
+use bevy::prelude::*;
 
 const WINDOW_THICKNESS: f32 = 0.2;
 const DOOR_THICKNESS: f32 = 0.2;
@@ -17,29 +17,29 @@ pub fn spawn_blueprint(
     // Blueprints are translucent white (floors lighter, structures more visible)
     let (color, z_level, mesh_size) = match blueprint_type {
         BlueprintType::Wall => (
-            Color::srgba(1.0, 1.0, 1.0, 0.6),  // More opaque for walls
+            Color::srgba(1.0, 1.0, 1.0, 0.6), // More opaque for walls
             1.5,
-            (tile_size, tile_size)  // Full square
+            (tile_size, tile_size), // Full square
         ),
         BlueprintType::Door(_) => (
             Color::srgba(1.0, 1.0, 1.0, 0.6),
             1.5,
-            (tile_size, tile_size)  // Full square
+            (tile_size, tile_size), // Full square
         ),
         BlueprintType::Window => (
             Color::srgba(1.0, 1.0, 1.0, 0.6),
             1.5,
-            (tile_size, tile_size * WINDOW_THICKNESS)  // Thin for windows
+            (tile_size, tile_size * WINDOW_THICKNESS), // Thin for windows
         ),
         BlueprintType::Floor(_) => (
-            Color::srgba(1.0, 1.0, 1.0, 0.3),  // More translucent for floors
+            Color::srgba(1.0, 1.0, 1.0, 0.3), // More translucent for floors
             0.5,
-            (tile_size, tile_size)  // Full square
+            (tile_size, tile_size), // Full square
         ),
         BlueprintType::Furniture(_) => (
             Color::srgba(1.0, 1.0, 1.0, 0.6),
             2.5,
-            (tile_size, tile_size)  // Full square
+            (tile_size, tile_size), // Full square
         ),
     };
 

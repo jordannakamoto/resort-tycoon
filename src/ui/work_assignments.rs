@@ -85,7 +85,7 @@ fn handle_keyboard_panel_toggle(
     keyboard: Res<ButtonInput<KeyCode>>,
     mut panel_state: ResMut<WorkAssignmentsPanelState>,
 ) {
-    if keyboard.just_pressed(KeyCode::KeyW) {
+    if keyboard.just_pressed(KeyCode::KeyZ) {
         panel_state.visible = !panel_state.visible;
     }
 }

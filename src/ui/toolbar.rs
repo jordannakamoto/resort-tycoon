@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
-use super::work_assignments::WorkAssignmentsPanelState;
+use super::{
+    reservations::ReservationsPanelState, room_manager::RoomManagerPanelState,
+    work_assignments::WorkAssignmentsPanelState, UiInputBlocker,
+};
 
 const TOOLBAR_HEIGHT: f32 = 80.0;
 const TAB_WIDTH: f32 = 100.0;
@@ -8,6 +11,12 @@ const BUTTON_SIZE: f32 = 60.0;
 
 #[derive(Component)]
 pub struct Toolbar;
+
+#[derive(Component)]
+pub struct TabContentArea;
+
+#[derive(Component)]
+pub struct ToolbarBar;
 
 #[derive(Component)]
 pub struct TabButton {
@@ -29,6 +38,12 @@ pub struct WorkAssignmentsButton;
 
 #[derive(Component)]
 pub struct SaveLoadButton;
+
+#[derive(Component)]
+pub struct ReservationsButton;
+
+#[derive(Component)]
+pub struct RoomManagerButton;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ConstructionTab {
@@ -101,6 +116,7 @@ pub struct ToolbarPlugin;
 impl Plugin for ToolbarPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<ToolbarState>()
+            .init_resource::<UiInputBlocker>()
             .add_systems(Startup, setup_toolbar)
             .add_systems(
                 Update,
@@ -114,42 +130,81 @@ impl Plugin for ToolbarPlugin {
                     update_work_assignments_button_colors,
                     handle_save_load_button_clicks,
                     update_save_load_button_colors,
+                    handle_reservations_button_clicks,
+                    update_reservations_button_colors,
+                    handle_room_manager_button_clicks,
+                    update_room_manager_button_colors,
+                    block_map_input_over_toolbar,
                 ),
             );
     }
 }
 
 fn setup_toolbar(mut commands: Commands) {
-    // Root toolbar container
+    // Root toolbar container (holds the tab bar and the tab contents stacked above it)
     commands
         .spawn((
             Node {
                 width: Val::Percent(100.0),
-                height: Val::Px(TOOLBAR_HEIGHT),
                 position_type: PositionType::Absolute,
                 bottom: Val::Px(0.0),
                 left: Val::Px(0.0),
-                flex_direction: FlexDirection::Row,
-                padding: UiRect::all(Val::Px(5.0)),
-                column_gap: Val::Px(5.0),
+                flex_direction: FlexDirection::Column,
+                row_gap: Val::Px(6.0),
+                align_items: AlignItems::FlexStart,
                 ..default()
             },
             BackgroundColor(Color::srgb(0.15, 0.15, 0.15)),
             Toolbar,
         ))
         .with_children(|parent| {
-            // Tab buttons
-            spawn_tab_button(parent, ConstructionTab::Orders, "Orders");
-            spawn_tab_button(parent, ConstructionTab::Structure, "Structure");
-            spawn_tab_button(parent, ConstructionTab::Furniture, "Furniture");
-            spawn_tab_button(parent, ConstructionTab::Bath, "Bath");
-            spawn_tab_button(parent, ConstructionTab::Staff, "Staff");
-            spawn_tab_button(parent, ConstructionTab::Decoration, "Decoration");
-            spawn_tab_button(parent, ConstructionTab::Floors, "Floors");
+            // Area that shows the active tab's buttons, stacked above the bar
+            parent.spawn((
+                Node {
+                    width: Val::Percent(100.0),
+                    display: Display::None,
+                    flex_wrap: FlexWrap::Wrap,
+                    column_gap: Val::Px(6.0),
+                    row_gap: Val::Px(6.0),
+                    padding: UiRect::axes(Val::Px(10.0), Val::Px(8.0)),
+                    ..default()
+                },
+                BackgroundColor(Color::srgb(0.1, 0.1, 0.1)),
+                TabContentArea,
+                Interaction::default(),
+            ));
 
-            // Panel shortcuts
-            spawn_work_assignments_button(parent);
-            spawn_save_load_button(parent);
+            // Bottom bar with categories and shortcuts
+            parent
+                .spawn((
+                    Node {
+                        width: Val::Percent(100.0),
+                        height: Val::Px(TOOLBAR_HEIGHT),
+                        flex_direction: FlexDirection::Row,
+                        align_items: AlignItems::Center,
+                        padding: UiRect::all(Val::Px(5.0)),
+                        column_gap: Val::Px(5.0),
+                        ..default()
+                    },
+                    BackgroundColor(Color::srgb(0.15, 0.15, 0.15)),
+                    ToolbarBar,
+                    Interaction::default(),
+                ))
+                .with_children(|parent| {
+                    spawn_tab_button(parent, ConstructionTab::Orders, "Orders");
+                    spawn_tab_button(parent, ConstructionTab::Structure, "Structure");
+                    spawn_tab_button(parent, ConstructionTab::Furniture, "Furniture");
+                    spawn_tab_button(parent, ConstructionTab::Bath, "Bath");
+                    spawn_tab_button(parent, ConstructionTab::Staff, "Staff");
+                    spawn_tab_button(parent, ConstructionTab::Decoration, "Decoration");
+                    spawn_tab_button(parent, ConstructionTab::Floors, "Floors");
+
+                    // Panel shortcuts
+                    spawn_work_assignments_button(parent);
+                    spawn_reservations_button(parent);
+                    spawn_room_manager_button(parent);
+                    spawn_save_load_button(parent);
+                });
         });
 }
 
@@ -285,6 +340,58 @@ fn spawn_save_load_button(parent: &mut ChildBuilder) {
         });
 }
 
+fn spawn_reservations_button(parent: &mut ChildBuilder) {
+    parent
+        .spawn((
+            Button,
+            Node {
+                width: Val::Px(140.0),
+                height: Val::Px(70.0),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                ..default()
+            },
+            BackgroundColor(Color::srgb(0.25, 0.25, 0.25)),
+            ReservationsButton,
+        ))
+        .with_children(|parent| {
+            parent.spawn((
+                Text::new("Reservations"),
+                TextFont {
+                    font_size: 16.0,
+                    ..default()
+                },
+                TextColor(Color::WHITE),
+            ));
+        });
+}
+
+fn spawn_room_manager_button(parent: &mut ChildBuilder) {
+    parent
+        .spawn((
+            Button,
+            Node {
+                width: Val::Px(120.0),
+                height: Val::Px(70.0),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                ..default()
+            },
+            BackgroundColor(Color::srgb(0.25, 0.25, 0.25)),
+            RoomManagerButton,
+        ))
+        .with_children(|parent| {
+            parent.spawn((
+                Text::new("Rooms"),
+                TextFont {
+                    font_size: 16.0,
+                    ..default()
+                },
+                TextColor(Color::WHITE),
+            ));
+        });
+}
+
 fn handle_tab_clicks(
     mut interaction_query: Query<
         (&Interaction, &TabButton, &mut BackgroundColor),
@@ -292,13 +399,19 @@ fn handle_tab_clicks(
     >,
     mut toolbar_state: ResMut<ToolbarState>,
     mut commands: Commands,
-    toolbar_query: Query<Entity, With<Toolbar>>,
     build_button_query: Query<Entity, With<BuildButton>>,
     order_button_query: Query<Entity, With<OrderButton>>,
+    mut tab_content_query: Query<(Entity, &mut Node), With<TabContentArea>>,
 ) {
     for (interaction, tab_button, mut color) in &mut interaction_query {
         match *interaction {
             Interaction::Pressed => {
+                let Ok((tab_contents_entity, mut tab_contents_style)) =
+                    tab_content_query.get_single_mut()
+                else {
+                    continue;
+                };
+
                 // Toggle tab or select new tab
                 if toolbar_state.active_tab == Some(tab_button.tab) {
                     toolbar_state.active_tab = None;
@@ -308,6 +421,10 @@ fn handle_tab_clicks(
                     for entity in &build_button_query {
                         commands.entity(entity).despawn_recursive();
                     }
+                    for entity in &order_button_query {
+                        commands.entity(entity).despawn_recursive();
+                    }
+                    tab_contents_style.display = Display::None;
                 } else {
                     toolbar_state.active_tab = Some(tab_button.tab);
                     toolbar_state.selected_building = None;
@@ -321,114 +438,106 @@ fn handle_tab_clicks(
                         commands.entity(entity).despawn_recursive();
                     }
 
+                    tab_contents_style.display = Display::Flex;
+
                     // Spawn new buttons for this tab
-                    if let Ok(toolbar_entity) = toolbar_query.get_single() {
-                        commands.entity(toolbar_entity).with_children(|parent| {
-                            match tab_button.tab {
-                                ConstructionTab::Orders => {
-                                    spawn_order_button(
-                                        parent,
-                                        OrderType::Deconstruct,
-                                        "Deconstruct",
-                                    );
-                                }
-                                ConstructionTab::Structure => {
-                                    spawn_build_button(parent, BuildingType::Wall, "Wall");
-                                    spawn_build_button(parent, BuildingType::Door, "Door");
-                                    spawn_build_button(parent, BuildingType::Window, "Window");
-                                }
-                                ConstructionTab::Furniture => {
-                                    use crate::components::{BedType, FurnitureType};
-                                    spawn_build_button(
-                                        parent,
-                                        BuildingType::Furniture(FurnitureType::Bed(
-                                            BedType::Single,
-                                        )),
-                                        "Single Bed",
-                                    );
-                                    spawn_build_button(
-                                        parent,
-                                        BuildingType::Furniture(FurnitureType::Bed(
-                                            BedType::Double,
-                                        )),
-                                        "Double Bed",
-                                    );
-                                    spawn_build_button(
-                                        parent,
-                                        BuildingType::Furniture(FurnitureType::Desk),
-                                        "Desk",
-                                    );
-                                    spawn_build_button(
-                                        parent,
-                                        BuildingType::Furniture(FurnitureType::Chair),
-                                        "Chair",
-                                    );
-                                    spawn_build_button(
-                                        parent,
-                                        BuildingType::Furniture(FurnitureType::Dresser),
-                                        "Dresser",
-                                    );
-                                    spawn_build_button(
-                                        parent,
-                                        BuildingType::Furniture(FurnitureType::Nightstand),
-                                        "Nightstand",
-                                    );
-                                }
-                                ConstructionTab::Bath => {
-                                    use crate::components::FurnitureType;
-                                    spawn_build_button(
-                                        parent,
-                                        BuildingType::Furniture(FurnitureType::Tub),
-                                        "Tub",
-                                    );
-                                    spawn_build_button(
-                                        parent,
-                                        BuildingType::Furniture(FurnitureType::Sink),
-                                        "Sink",
-                                    );
-                                    spawn_build_button(
-                                        parent,
-                                        BuildingType::Furniture(FurnitureType::Toilet),
-                                        "Toilet",
-                                    );
-                                }
-                                ConstructionTab::Staff => {
-                                    use crate::components::FurnitureType;
-                                    spawn_build_button(
-                                        parent,
-                                        BuildingType::Furniture(FurnitureType::ReceptionConsole),
-                                        "Reception",
-                                    );
-                                }
-                                ConstructionTab::Floors => {
-                                    use crate::components::FloorType;
-                                    spawn_build_button(
-                                        parent,
-                                        BuildingType::Floor(FloorType::Wood),
-                                        "Wood",
-                                    );
-                                    spawn_build_button(
-                                        parent,
-                                        BuildingType::Floor(FloorType::Stone),
-                                        "Stone",
-                                    );
-                                    spawn_build_button(
-                                        parent,
-                                        BuildingType::Floor(FloorType::Carpet),
-                                        "Carpet",
-                                    );
-                                    spawn_build_button(
-                                        parent,
-                                        BuildingType::Floor(FloorType::Tile),
-                                        "Tile",
-                                    );
-                                }
-                                _ => {
-                                    // TODO: Add other categories
-                                }
+                    commands
+                        .entity(tab_contents_entity)
+                        .with_children(|parent| match tab_button.tab {
+                            ConstructionTab::Orders => {
+                                spawn_order_button(parent, OrderType::Deconstruct, "Deconstruct");
+                            }
+                            ConstructionTab::Structure => {
+                                spawn_build_button(parent, BuildingType::Wall, "Wall");
+                                spawn_build_button(parent, BuildingType::Door, "Door");
+                                spawn_build_button(parent, BuildingType::Window, "Window");
+                            }
+                            ConstructionTab::Furniture => {
+                                use crate::components::{BedType, FurnitureType};
+                                spawn_build_button(
+                                    parent,
+                                    BuildingType::Furniture(FurnitureType::Bed(BedType::Single)),
+                                    "Single Bed",
+                                );
+                                spawn_build_button(
+                                    parent,
+                                    BuildingType::Furniture(FurnitureType::Bed(BedType::Double)),
+                                    "Double Bed",
+                                );
+                                spawn_build_button(
+                                    parent,
+                                    BuildingType::Furniture(FurnitureType::Desk),
+                                    "Desk",
+                                );
+                                spawn_build_button(
+                                    parent,
+                                    BuildingType::Furniture(FurnitureType::Chair),
+                                    "Chair",
+                                );
+                                spawn_build_button(
+                                    parent,
+                                    BuildingType::Furniture(FurnitureType::Dresser),
+                                    "Dresser",
+                                );
+                                spawn_build_button(
+                                    parent,
+                                    BuildingType::Furniture(FurnitureType::Nightstand),
+                                    "Nightstand",
+                                );
+                            }
+                            ConstructionTab::Bath => {
+                                use crate::components::FurnitureType;
+                                spawn_build_button(
+                                    parent,
+                                    BuildingType::Furniture(FurnitureType::Tub),
+                                    "Tub",
+                                );
+                                spawn_build_button(
+                                    parent,
+                                    BuildingType::Furniture(FurnitureType::Sink),
+                                    "Sink",
+                                );
+                                spawn_build_button(
+                                    parent,
+                                    BuildingType::Furniture(FurnitureType::Toilet),
+                                    "Toilet",
+                                );
+                            }
+                            ConstructionTab::Staff => {
+                                use crate::components::FurnitureType;
+                                spawn_build_button(
+                                    parent,
+                                    BuildingType::Furniture(FurnitureType::ReceptionConsole),
+                                    "Reception",
+                                );
+                            }
+                            ConstructionTab::Floors => {
+                                use crate::components::FloorType;
+                                spawn_build_button(
+                                    parent,
+                                    BuildingType::Floor(FloorType::Wood),
+                                    "Wood",
+                                );
+                                spawn_build_button(
+                                    parent,
+                                    BuildingType::Floor(FloorType::Stone),
+                                    "Stone",
+                                );
+                                spawn_build_button(
+                                    parent,
+                                    BuildingType::Floor(FloorType::Carpet),
+                                    "Carpet",
+                                );
+                                spawn_build_button(
+                                    parent,
+                                    BuildingType::Floor(FloorType::Tile),
+                                    "Tile",
+                                );
+                            }
+                            _ => {
+                                // TODO: Add other categories
                             }
                         });
-                    }
                 }
             }
             Interaction::Hovered => {
@@ -579,4 +688,91 @@ fn update_save_load_button_colors(
             }
         }
     }
+}
+
+fn handle_reservations_button_clicks(
+    mut interaction_query: Query<&Interaction, (Changed<Interaction>, With<ReservationsButton>)>,
+    mut panel_state: ResMut<ReservationsPanelState>,
+) {
+    for interaction in &mut interaction_query {
+        if *interaction == Interaction::Pressed {
+            panel_state.visible = !panel_state.visible;
+        }
+    }
+}
+
+fn update_reservations_button_colors(
+    mut button_query: Query<(&mut BackgroundColor, &Interaction), With<ReservationsButton>>,
+    panel_state: Res<ReservationsPanelState>,
+) {
+    for (mut color, interaction) in &mut button_query {
+        if panel_state.visible {
+            *color = Color::srgb(0.4, 0.6, 0.4).into();
+        } else {
+            match interaction {
+                Interaction::Hovered => {
+                    *color = Color::srgb(0.35, 0.35, 0.35).into();
+                }
+                _ => {
+                    *color = Color::srgb(0.25, 0.25, 0.25).into();
+                }
+            }
+        }
+    }
+}
+
+fn handle_room_manager_button_clicks(
+    mut interaction_query: Query<&Interaction, (Changed<Interaction>, With<RoomManagerButton>)>,
+    mut panel_state: ResMut<RoomManagerPanelState>,
+) {
+    for interaction in &mut interaction_query {
+        if *interaction == Interaction::Pressed {
+            panel_state.visible = !panel_state.visible;
+        }
+    }
+}
+
+fn update_room_manager_button_colors(
+    mut button_query: Query<(&mut BackgroundColor, &Interaction), With<RoomManagerButton>>,
+    panel_state: Res<RoomManagerPanelState>,
+) {
+    for (mut color, interaction) in &mut button_query {
+        if panel_state.visible {
+            *color = Color::srgb(0.4, 0.6, 0.4).into();
+        } else {
+            match interaction {
+                Interaction::Hovered => {
+                    *color = Color::srgb(0.35, 0.35, 0.35).into();
+                }
+                _ => {
+                    *color = Color::srgb(0.25, 0.25, 0.25).into();
+                }
+            }
+        }
+    }
+}
+
+fn block_map_input_over_toolbar(
+    mut ui_blocker: ResMut<UiInputBlocker>,
+    interaction_query: Query<
+        &Interaction,
+        Or<(
+            With<TabButton>,
+            With<BuildButton>,
+            With<OrderButton>,
+            With<WorkAssignmentsButton>,
+            With<SaveLoadButton>,
+            With<ReservationsButton>,
+            With<RoomManagerButton>,
+            With<TabContentArea>,
+            With<ToolbarBar>,
+        )>,
+    >,
+) {
+    let should_block = interaction_query
+        .iter()
+        .any(|interaction| matches!(*interaction, Interaction::Hovered | Interaction::Pressed));
+
+    ui_blocker.toolbar_blocking = should_block;
+    ui_blocker.recompute();
 }

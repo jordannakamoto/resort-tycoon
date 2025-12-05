@@ -15,3 +15,6 @@ Thumbs.db
 
 # Generated images
 *.png
+
+# Local audio assets
+assets/music/

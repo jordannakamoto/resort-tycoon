@@ -136,8 +136,8 @@ impl WallMaterial {
     pub fn color(&self) -> Color {
         match self {
             WallMaterial::Wood => Color::srgb(0.6, 0.4, 0.2),
-            WallMaterial::Stone => Color::srgb(0.55, 0.52, 0.48),  // Warmer, lighter stone
-            WallMaterial::Concrete => Color::srgb(0.65, 0.62, 0.58),  // Warmer concrete
+            WallMaterial::Stone => Color::srgb(0.55, 0.52, 0.48), // Warmer, lighter stone
+            WallMaterial::Concrete => Color::srgb(0.65, 0.62, 0.58), // Warmer concrete
         }
     }
 }

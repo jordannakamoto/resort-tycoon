@@ -4,7 +4,6 @@ use crate::systems::grid::*;
 use bevy::prelude::*;
 use bevy::sprite::*;
 
-
 pub struct WorkPlugin;
 
 impl Plugin for WorkPlugin {
@@ -316,8 +315,8 @@ fn update_blueprint_visuals(
 
             // All blueprints are white, but floors are more translucent
             let alpha = match blueprint.building_type {
-                BlueprintType::Floor(_) => 0.2 + (progress * 0.3),  // Lighter for floors
-                _ => 0.4 + (progress * 0.4),  // More visible for structures
+                BlueprintType::Floor(_) => 0.2 + (progress * 0.3), // Lighter for floors
+                _ => 0.4 + (progress * 0.4),                       // More visible for structures
             };
 
             material.color = Color::srgba(1.0, 1.0, 1.0, alpha);

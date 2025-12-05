@@ -1,6 +1,6 @@
-use bevy::prelude::*;
 use crate::components::furniture::*;
 use crate::systems::grid::GridSettings;
+use bevy::prelude::*;
 
 // Sprite path constants
 const SINGLE_BED_SPRITE_PATH: &str = "generated/furniture/bed.png";
@@ -12,9 +12,9 @@ const TUB_SPRITE_PATH: &str = "generated/furniture/tub.png";
 const TOILET_SPRITE_PATH: &str = "generated/furniture/toilet.png";
 const SINK_SPRITE_PATH: &str = "generated/furniture/sink.png";
 const END_TABLE_SPRITE_PATH: &str = "generated/furniture/end_table.png";
-const COMPUTER_SIDE_SPRITE_PATH: &str = "generated/furniture/computer_side.png";
-const COMPUTER_FRONT_SPRITE_PATH: &str = "generated/furniture/computer_front.png";
-const COMPUTER_BACK_SPRITE_PATH: &str = "generated/furniture/computer_back.png";
+const COMPUTER_SIDE_SPRITE_PATH: &str = "generated/staff/computer_side.png";
+const COMPUTER_FRONT_SPRITE_PATH: &str = "generated/staff/computer.png";
+const COMPUTER_BACK_SPRITE_PATH: &str = "generated/staff/computer_back.png";
 
 pub enum FurnitureSpriteConfig {
     Rotating {
@@ -86,46 +86,38 @@ pub fn create_furniture_sprite(
 
             FurnitureSpriteConfig::Directional { sprite }
         }
-        FurnitureType::Tub => {
-            FurnitureSpriteConfig::Rotating {
-                sprite: Sprite {
-                    image: asset_server.load(TUB_SPRITE_PATH),
-                    custom_size: Some(sprite_size),
-                    ..default()
-                },
-                rotation_radians: furniture_rotation_radians(orientation),
-            }
-        }
-        FurnitureType::Toilet => {
-            FurnitureSpriteConfig::Rotating {
-                sprite: Sprite {
-                    image: asset_server.load(TOILET_SPRITE_PATH),
-                    custom_size: Some(sprite_size),
-                    ..default()
-                },
-                rotation_radians: furniture_rotation_radians(orientation),
-            }
-        }
-        FurnitureType::Sink => {
-            FurnitureSpriteConfig::Rotating {
-                sprite: Sprite {
-                    image: asset_server.load(SINK_SPRITE_PATH),
-                    custom_size: Some(sprite_size),
-                    ..default()
-                },
-                rotation_radians: furniture_rotation_radians(orientation),
-            }
-        }
-        FurnitureType::Nightstand => {
-            FurnitureSpriteConfig::Rotating {
-                sprite: Sprite {
-                    image: asset_server.load(END_TABLE_SPRITE_PATH),
-                    custom_size: Some(sprite_size),
-                    ..default()
-                },
-                rotation_radians: furniture_rotation_radians(orientation),
-            }
-        }
+        FurnitureType::Tub => FurnitureSpriteConfig::Rotating {
+            sprite: Sprite {
+                image: asset_server.load(TUB_SPRITE_PATH),
+                custom_size: Some(sprite_size),
+                ..default()
+            },
+            rotation_radians: furniture_rotation_radians(orientation),
+        },
+        FurnitureType::Toilet => FurnitureSpriteConfig::Rotating {
+            sprite: Sprite {
+                image: asset_server.load(TOILET_SPRITE_PATH),
+                custom_size: Some(sprite_size),
+                ..default()
+            },
+            rotation_radians: furniture_rotation_radians(orientation),
+        },
+        FurnitureType::Sink => FurnitureSpriteConfig::Rotating {
+            sprite: Sprite {
+                image: asset_server.load(SINK_SPRITE_PATH),
+                custom_size: Some(sprite_size),
+                ..default()
+            },
+            rotation_radians: furniture_rotation_radians(orientation),
+        },
+        FurnitureType::Nightstand => FurnitureSpriteConfig::Rotating {
+            sprite: Sprite {
+                image: asset_server.load(END_TABLE_SPRITE_PATH),
+                custom_size: Some(sprite_size),
+                ..default()
+            },
+            rotation_radians: furniture_rotation_radians(orientation),
+        },
         FurnitureType::ReceptionConsole => {
             let (sprite_path, flip_x) = match orientation {
                 FurnitureOrientation::East => (COMPUTER_SIDE_SPRITE_PATH, false),

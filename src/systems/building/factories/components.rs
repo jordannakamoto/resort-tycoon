@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::components::furniture::*;
+use bevy::prelude::*;
 
 /// Inserts the appropriate furniture-specific component onto an entity
 pub fn insert_furniture_component(
@@ -9,14 +9,18 @@ pub fn insert_furniture_component(
     commands: &mut Commands,
 ) {
     // Add type and orientation components (always added)
-    commands.entity(entity)
+    commands
+        .entity(entity)
         .insert(furniture_type)
         .insert(orientation);
 
     // Add furniture-specific marker/data components
     match furniture_type {
         FurnitureType::Bed(bed_type) => {
-            commands.entity(entity).insert(Bed::new(bed_type));
+            commands
+                .entity(entity)
+                .insert(Bed::new(bed_type))
+                .insert(BedClaim::default());
         }
         FurnitureType::Desk => {
             commands.entity(entity).insert(Desk);
@@ -31,13 +35,22 @@ pub fn insert_furniture_component(
             commands.entity(entity).insert(Nightstand);
         }
         FurnitureType::Toilet => {
-            commands.entity(entity).insert(Toilet);
+            commands
+                .entity(entity)
+                .insert(Toilet)
+                .insert(FixtureInUse::default());
         }
         FurnitureType::Sink => {
-            commands.entity(entity).insert(Sink);
+            commands
+                .entity(entity)
+                .insert(Sink)
+                .insert(FixtureInUse::default());
         }
         FurnitureType::Tub => {
-            commands.entity(entity).insert(Tub);
+            commands
+                .entity(entity)
+                .insert(Tub)
+                .insert(FixtureInUse::default());
         }
         FurnitureType::ReceptionConsole => {
             commands.entity(entity).insert(ReceptionConsole::new());

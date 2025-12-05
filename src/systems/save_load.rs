@@ -535,9 +535,9 @@ fn spawn_furniture(
     const TOILET_SPRITE_PATH: &str = "generated/furniture/toilet.png";
     const SINK_SPRITE_PATH: &str = "generated/furniture/sink.png";
     const END_TABLE_SPRITE_PATH: &str = "generated/furniture/end_table.png";
-    const COMPUTER_SIDE_SPRITE_PATH: &str = "generated/furniture/computer_side.png";
-    const COMPUTER_FRONT_SPRITE_PATH: &str = "generated/furniture/computer_front.png";
-    const COMPUTER_BACK_SPRITE_PATH: &str = "generated/furniture/computer_back.png";
+    const COMPUTER_SIDE_SPRITE_PATH: &str = "generated/staff/computer_side.png";
+    const COMPUTER_FRONT_SPRITE_PATH: &str = "generated/staff/computer.png";
+    const COMPUTER_BACK_SPRITE_PATH: &str = "generated/staff/computer_back.png";
 
     // Spawn furniture entity based on type
     let furniture_entity = match furniture_type {
